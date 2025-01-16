@@ -27,13 +27,13 @@ We can optimize the previous approach by using the property that for any non-neg
     - If `i` is different from `n/i`, add the counterpart divisor `n/i` to the vector of divisors.
 3. After the loop, return the array of divisors.
 
-![Divisor Theorem](https://via.placeholder.com/400x200)
-
 ## Checking Prime
 
 ### Algorithm / Intuition
 
 We can optimize the algorithm by only iterating up to the square root of `n` when checking for factors. This is because if `n` has a factor greater than its square root, it must also have a factor smaller than its square root. This property is symmetric about the square root of `n`. By traversing just the first half, we can avoid redundant iteration and computations, improving the efficiency of the algorithm.
+
+![Divisor Theorem](https://via.placeholder.com/400x200)
 
 ### Algorithm
 
