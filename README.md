@@ -8,7 +8,7 @@ To find the GCD of `n1` and `n2` where `n1 > n2`:
 1. Repeatedly subtract the smaller number from the larger number until one of them becomes 0.
 2. Once one of them becomes 0, the other number is the GCD of the original numbers.
 
-![Euclidean Algorithm](https://via.placeholder.com/400x200)
+![Euclidean Algorithm](https://github.com/zjaweds/CPRevision/blob/main/Images/GCD.png/600x600)
 
 **Example:**
 
@@ -33,7 +33,7 @@ We can optimize the previous approach by using the property that for any non-neg
 
 We can optimize the algorithm by only iterating up to the square root of `n` when checking for factors. This is because if `n` has a factor greater than its square root, it must also have a factor smaller than its square root. This property is symmetric about the square root of `n`. By traversing just the first half, we can avoid redundant iteration and computations, improving the efficiency of the algorithm.
 
-![Divisor Theorem](https://via.placeholder.com/400x200)
+![Divisor Theorem](https://github.com/zjaweds/CPRevision/blob/main/Images/Prime.png/600x600)
 
 ### Algorithm
 
