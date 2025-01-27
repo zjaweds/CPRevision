@@ -53,7 +53,7 @@ We can optimize the algorithm by only iterating up to the square root of `n` whe
 - **Just like the movement of air bubbles in the water that rise up to the surface, each element of the array move to the end in each iteration. Therefore, it is called a bubble sort.**
 - **In Bubblesort, it compares two adjacent element and swaps them until they are in the intended order**
 - After each iteration an element reaches at the intnded position- in case of ascending order largest element reaches the last position in first iteration and second largest element reaches the second last position in second iteration and so on but in descending order smallest element reaches the last position in first iteration and the second smallest element reaches the second last element and so on
-## Code
+### Code
 
 ```
 def bubbleSort(array):
