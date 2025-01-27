@@ -47,7 +47,26 @@ We can optimize the algorithm by only iterating up to the square root of `n` whe
     - If the number of factors is greater than 2, then it is a composite number; return false.
 
 # Sorting
-## Selection
+## Selection [Programiz](https://www.programiz.com/dsa/selection-sort)
+**Selection sort is a sorting algorithm that selects the smallest element from an unsorted list in each iteration and places that element at the beginning of the unsorted list.**
+1. Set the first element as `minimum`
+2. a. Compare `minimum` with the second element. If the second element is smaller than `minimum`, assign the second element as `minimum`.
+   b. Compare `minimum` with the third element. Again, if the third element is smaller, then assign `minimum` to the third element otherwise do nothing. The process goes on until the last element.
+3. After each iteration, `minimum` is placed in the front of the unsorted list.
+4. For each iteration, indexing starts from the first unsorted element. Step 1 to 3 are repeated until all the elements are placed at their correct positions.
+```
+def selectionSort(array, size):
+    for step in range(size):
+        min_idx = step
+        for i in range(step + 1, size):
+            # to sort in descending order, change > to < in this line
+            # select the minimum element in each loop
+            if array[i] < array[min_idx]:
+                min_idx = i
+        # put min at the correct position (swapping step)
+        (array[step], array[min_idx]) = (array[min_idx], array[step])
+```
+
 ## Insertion
 ## Bubble
 - **Just like the movement of air bubbles in the water that rise up to the surface, each element of the array move to the end in each iteration. Therefore, it is called a bubble sort.**
