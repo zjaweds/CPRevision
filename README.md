@@ -74,6 +74,13 @@ def bubbleSort(array):
         array[j] = array[j+1]
         array[j+1] = temp
 ```
+![Bubblesort 1](https://github.com/zjaweds/CPRevision/blob/main/Images/Bubblesort1.png?raw=true)
+
+![Bubblesort 2](https://github.com/zjaweds/CPRevision/blob/main/Images/Bubblesort2.png?raw=true)
+
+![Bubblesort 3](https://github.com/zjaweds/CPRevision/blob/main/Images/Bubblesort3.png?raw=true)
+
+![Bubblesort 4](https://github.com/zjaweds/CPRevision/blob/main/Images/Bubblesort4.png?raw=true)
 
 ## Quick
 ## Merge
