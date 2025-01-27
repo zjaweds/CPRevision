@@ -1,3 +1,9 @@
+# Asymptotic Notation
+## [Master Theorem](https://www.programiz.com/dsa/master-theorem)
+## [Amortized Time Complexity](https://stackoverflow.com/questions/15079327/amortized-complexity-in-laymans-terms)
+### [Naukri.com](https://www.naukri.com/code360/library/amortized-time-complexity-in-data-structures)
+
+
 # GCD and HCF Euclidean Concept
 
 The Euclidean Algorithm is a method for finding the greatest common divisor (GCD) of two numbers. It operates on the principle that the GCD of two numbers remains the same even if the smaller number is subtracted from the larger number.
@@ -46,8 +52,12 @@ We can optimize the algorithm by only iterating up to the square root of `n` whe
 4. Check if the value of `cnt` is exactly 2; it means that `n` has exactly two distinct factors (1 and itself), indicating that it is a prime number.
     - If the number of factors is greater than 2, then it is a composite number; return false.
 
+
+# Recursion
+
+
 # Sorting
-## Selection [Programiz](https://www.programiz.com/dsa/selection-sort)
+## [Selection Sort Programiz](https://www.programiz.com/dsa/selection-sort)
 **Selection sort is a sorting algorithm that selects the smallest element from an unsorted list in each iteration and places that element at the beginning of the unsorted list.**
 1. Set the first element as `minimum`
 2. a. Compare `minimum` with the second element. If the second element is smaller than `minimum`, assign the second element as `minimum`.
@@ -67,8 +77,29 @@ def selectionSort(array, size):
         (array[step], array[min_idx]) = (array[min_idx], array[step])
 ```
 
-## Insertion
-## Bubble
+## [Insertion Sort Programiz](https://www.programiz.com/dsa/insertion-sort)
+- **Insertion sort is a sorting algorithm that places an unsorted element at its suitable place in each iteration.**
+### Algorithm
+1. a. The first element in the array is assumed to be sorted. Take the second element and store it separately in key.
+   
+   b. Compare key with the first element. If the first element is greater than key, then key is placed in front of the first element.
+3. Now, the first two elements are sorted. Take the third element and compare it with the elements on the left of it. Placed it just behind the element smaller than it. If there is no element smaller than it, then place it at the beginning of the array.
+4. Similarly, place every unsorted element at its correct position.
+```
+def insertionSort(array):
+    for step in range(1, len(array)):
+        key = array[step]
+        j = step - 1
+        # Compare key with each element on the left of it until an element smaller than it is found
+        # For descending order, change key<array[j] to key>array[j].        
+        while j >= 0 and key < array[j]:
+            array[j + 1] = array[j]
+            j = j - 1
+        # Place key at after the element just smaller than it.
+        array[j + 1] = key
+```
+
+## [Bubblesort Programiz](https://www.programiz.com/dsa/bubble-sort)
 - **Just like the movement of air bubbles in the water that rise up to the surface, each element of the array move to the end in each iteration. Therefore, it is called a bubble sort.**
 - **In Bubblesort, it compares two adjacent element and swaps them until they are in the intended order**
 - After each iteration an element reaches at the intnded position- in case of ascending order largest element reaches the last position in first iteration and second largest element reaches the second last position in second iteration and so on but in descending order smallest element reaches the last position in first iteration and the second smallest element reaches the second last element and so on
@@ -101,20 +132,15 @@ def bubbleSort(array):
 
 ![Bubblesort 4](https://github.com/zjaweds/CPRevision/blob/main/Images/Bubblesort4.png?raw=true)
 
-## Quick
-## Merge
-## Recursive Bubble
-## Recursive Insertion
+## [Quicksort Programiz](https://www.programiz.com/dsa/quick-sort)
+## [Mergesort Programiz](https://www.programiz.com/dsa/merge-sort)
+## Recursive Bubblesort
+## Recursive Insertion Sort
 
 # Searching
 ## Binary Search
 - Lower Bound
 - Upper Bound
-
-# Asymptotic Notation
-## Master Theorem
-
-# Recursion
 
 # Hashing
 ## Hash Table
