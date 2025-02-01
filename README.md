@@ -134,6 +134,50 @@ def bubbleSort(array):
 
 ## [Quicksort Programiz](https://www.programiz.com/dsa/quick-sort)
 ## [Mergesort Programiz](https://www.programiz.com/dsa/merge-sort)
+```
+class Solution {
+  public:
+    void merge(vector<int>& arr, int m, int l, int r){
+        vector<int>temp;
+        int right=m+1;
+        int left=l;
+        // Sorting two halves
+        while(left<=m && right<=r){
+            if(arr[left]<=arr[right]){
+                temp.push_back(arr[left]);
+                left++;
+            }else{
+                temp.push_back(arr[right]);
+                right++;
+            }
+        }
+        // Remaining elements in first half
+        while(left<=m){
+            temp.push_back(arr[left]);
+            left++;
+        }
+        // Remaining elements in second half
+        while(right<=r){
+            temp.push_back(arr[right]);
+            right++;
+        }
+        // All elements of temporary array being assigned to the original array
+        for(int i=l; i<=r; i++){
+            arr[i]=temp[i-l];
+        }
+    }
+    void mergeSort(vector<int>& arr, int l, int r) {
+        if(r<=l) return; // Base case
+        int m=l+(r-l)/2; // Mid point
+        // mergeSort(first half);
+        mergeSort(arr, l, m);
+        // mergeSort(second half)
+        mergeSort(arr, m+1, r);
+        //merge(first and second halves)
+        merge(arr, m, l, r);
+    }
+};
+```
 ## Recursive Bubblesort
 ## Recursive Insertion Sort
 
