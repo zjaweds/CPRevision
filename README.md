@@ -133,7 +133,47 @@ def bubbleSort(array):
 ![Bubblesort 4](https://github.com/zjaweds/CPRevision/blob/main/Images/Bubblesort4.png?raw=true)
 
 ## [Quicksort Programiz](https://www.programiz.com/dsa/quick-sort)
+
+In **Quicksort**, we select a pivot and divide the array at left and the array at right of the pivot **recursively**, we call this process **Partition, here we select a pivot and at the end of the function the pivot reaches its actual position in the array when it would be sorted**.
+In **Partions**, we select a pivot and then we take two pinters one at the starting index (i, assumption) and another at the end of the array (j, assumption) and we perform following operations
+ 1. We increase i as long as the ith element is smaller than or equal to pivot
+ 2. We decrease j as long as jth element is greater than pivot
+ 3. if both of them have not met yet we swap ith and jth elements
+ 4. if they (i, j) have met or crossed each other we swap the jth element with pivot and return j
+
+**Quicksort Function**
+```
+void Quicksort(vector<int> &arr, int low, int high) {
+    if (low < high) {
+        int pIndex = partition(arr, low, high);
+        Quicksort(arr, low, pIndex - 1);
+        Quicksort(arr, pIndex + 1, high);
+    }
+}
+```
+
+**Partition Function**
+```
+int partition(arr, low, high){
+    pivot = arr[low];
+    i = low;
+    j = high;
+    while(i<j){
+        while(arr[i] <= pivot && i < high){
+            i++;
+        }
+        while(arr[j] > pivot && j > low){
+            j--;
+        }
+        if(i < j) swap(arr[i], arr[j]);
+    }
+    swap(arr[low], arr[j]);
+    return j;
+}
+```
+
 ## [Mergesort Programiz](https://www.programiz.com/dsa/merge-sort)
+**In Mergesort we divide the array into two halves recursively as long as there is no division possible and then we compare and merge two divided arrays**
 ```
 class Solution {
   public:
