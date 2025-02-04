@@ -225,8 +225,10 @@ class Solution {
 # Searching
 ## [Binary Search](https://www.programiz.com/dsa/binary-search)
 There are two approaches of solving this problem, it works only on a **sorted** array.
- **1. Iterative**
-    ```
+
+**1. Iterative**
+ 
+```
     do until the pointers low and high meet each other.
         mid = (low + high)/2
         if (x == arr[mid])
@@ -235,12 +237,16 @@ There are two approaches of solving this problem, it works only on a **sorted** 
             low = mid + 1
         else                       // x is on the left side
             high = mid - 1
-    ```
+```
     
  **2. Recursive**
     
-    It follows divide and conquer approach, we get the middle element and we compare it with the element that we have to find, if it is same then we return the middle index, if it is smaller than the        middle element we search in first half else if it is greater than the middle element we search in the second half, **recursively**.
-    ```
+    It follows divide and conquer approach, we get the middle element and we compare it with the element 
+    that we have to find, if it is same then we return the middle index, if it is smaller than the middle
+    element we search in first half else if it is greater than the middle element we search in the second
+    half, recursively.
+    
+```
     binarySearch(arr, x, low, high)
         if low > high
             return False 
@@ -252,7 +258,7 @@ There are two approaches of solving this problem, it works only on a **sorted** 
                 return binarySearch(arr, x, mid + 1, high)
             else                               // x is on the left side
                 return binarySearch(arr, x, low, mid - 1)
-    ```
+```
     
 - Lower Bound
 - Upper Bound
