@@ -274,6 +274,20 @@ There are two approaches of solving this problem, it works only on a **sorted** 
 ## Priority Queue
 
 # Tree
+A nonlinear hierarchical data structure comprising `Nodes` connected by `Edges`.
+
+**Node**: A node is an entity that contains data and pointers to its children nodes.
+
+![Edge and Node](https://github.com/zjaweds/CPRevision/blob/main/Images/Edge.png?raw=true)
+
+- The last nodes of each path are called **Leaf Nodes** or external nodes that do not contain a pointer to child nodes.
+- The node having at least a child node is called an **Internal Node**.
+- **The Height** of a node is the number of edges from the node to the deepest leaf (ie. the **longest path from the node to a leaf node**).
+- **The Depth** of a node is the number of edges from the root to the node.
+- The height of a Tree is the height of the root node or the depth of the deepest node.
+
+![Height and Depth](https://github.com/zjaweds/CPRevision/blob/main/Images/Height.png?raw=true)
+  
 ## Binary Tree (Full, Perfect, Complete, Degenerate, Skewed, Balanced, AVL)
 ## Tree Traversal (Pre, In, Post)
 
