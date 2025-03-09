@@ -274,63 +274,83 @@ There are two approaches of solving this problem, it works only on a **sorted** 
 ```
 using System;
 
-public class Queue<T>
+public class CircularQueue<T>
 {
     private T[] elements;
     private int front;
     private int rear;
     private int max;
-    private int count;
 
-    public Queue(int size)
+    public CircularQueue(int size)
     {
         elements = new T[size];
-        front = 0;
+        front = -1;
         rear = -1;
         max = size;
-        count = 0;
     }
 
     public void Enqueue(T item)
     {
-        if (count == max)
+        if ((rear + 1) % max == front)
         {
             Console.WriteLine("Queue is full");
             return;
         }
 
+        if (front == -1)
+        {
+            front = 0;
+        }
+
         rear = (rear + 1) % max;
         elements[rear] = item;
-        count++;
     }
 
     public T Dequeue()
     {
-        if (count == 0)
+        if (front == -1)
         {
             Console.WriteLine("Queue is empty");
             return default(T);
         }
 
         T item = elements[front];
-        front = (front + 1) % max;
-        count--;
+        if (front == rear)
+        {
+            front = -1;
+            rear = -1;
+        }
+        else
+        {
+            front = (front + 1) % max;
+        }
         return item;
     }
 
     public bool IsEmpty()
     {
-        return count == 0;
+        return front == -1;
     }
 
     public bool IsFull()
     {
-        return count == max;
+        return (rear + 1) % max == front;
     }
 
     public int Size()
     {
-        return count;
+        if (front == -1)
+        {
+            return 0;
+        }
+        else if (rear >= front)
+        {
+            return rear - front + 1;
+        }
+        else
+        {
+            return max - front + rear + 1;
+        }
     }
 }
 
@@ -338,7 +358,7 @@ class Program
 {
     static void Main()
     {
-        Queue<int> queue = new Queue<int>(5);
+        CircularQueue<int> queue = new CircularQueue<int>(5);
 
         queue.Enqueue(1);
         queue.Enqueue(2);
