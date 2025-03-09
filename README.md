@@ -271,6 +271,94 @@ There are two approaches of solving this problem, it works only on a **sorted** 
 # Stack (Array & Linkedlist)
 
 # Queue (Array & Linkedlist)
+```
+using System;
+
+public class Queue<T>
+{
+    private T[] elements;
+    private int front;
+    private int rear;
+    private int max;
+    private int count;
+
+    public Queue(int size)
+    {
+        elements = new T[size];
+        front = 0;
+        rear = -1;
+        max = size;
+        count = 0;
+    }
+
+    public void Enqueue(T item)
+    {
+        if (count == max)
+        {
+            Console.WriteLine("Queue is full");
+            return;
+        }
+
+        rear = (rear + 1) % max;
+        elements[rear] = item;
+        count++;
+    }
+
+    public T Dequeue()
+    {
+        if (count == 0)
+        {
+            Console.WriteLine("Queue is empty");
+            return default(T);
+        }
+
+        T item = elements[front];
+        front = (front + 1) % max;
+        count--;
+        return item;
+    }
+
+    public bool IsEmpty()
+    {
+        return count == 0;
+    }
+
+    public bool IsFull()
+    {
+        return count == max;
+    }
+
+    public int Size()
+    {
+        return count;
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Queue<int> queue = new Queue<int>(5);
+
+        queue.Enqueue(1);
+        queue.Enqueue(2);
+        queue.Enqueue(3);
+        queue.Enqueue(4);
+        queue.Enqueue(5);
+
+        Console.WriteLine("Queue size: " + queue.Size());
+
+        while (!queue.IsEmpty())
+        {
+            Console.WriteLine(queue.Dequeue());
+        }
+
+        Console.WriteLine("Queue size: " + queue.Size());
+    }
+}
+
+
+```
 ## Priority Queue
 
 # Tree
