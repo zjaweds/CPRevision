@@ -399,4 +399,310 @@ A nonlinear hierarchical data structure comprising `Nodes` connected by `Edges`.
 ## Binary Tree (Full, Perfect, Complete, Degenerate, Skewed, Balanced, AVL)
 ## Tree Traversal (Pre, In, Post)
 
+# Breadth First Search
+
+```
+using System;
+
+public class CircularQueue
+{
+    private int[] elements;
+    private int front;
+    private int rear;
+    private int max;
+
+    public CircularQueue(int size)
+    {
+        elements = new int[size];
+        front = -1;
+        rear = -1;
+        max = size;
+    }
+
+    public void Enqueue(int item)
+    {
+        if ((rear + 1) % max == front)
+        {
+            Console.WriteLine("Queue is full");
+            return;
+        }
+
+        if (front == -1)
+        {
+            front = 0;
+        }
+
+        rear = (rear + 1) % max;
+        elements[rear] = item;
+    }
+
+    public int Dequeue()
+    {
+        if (front == -1)
+        {
+            Console.WriteLine("Queue is empty");
+            return -1; // Assuming -1 indicates an empty queue
+        }
+
+        int item = elements[front];
+        if (front == rear)
+        {
+            front = -1;
+            rear = -1;
+        }
+        else
+        {
+            front = (front + 1) % max;
+        }
+        return item;
+    }
+
+    public bool IsEmpty()
+    {
+        return front == -1;
+    }
+
+    public bool IsFull()
+    {
+        return (rear + 1) % max == front;
+    }
+}
+
+public class Node
+{
+    public int data;
+    public Node left, right;
+
+    public Node(int item)
+    {
+        data = item;
+        left = right = null;
+    }
+}
+
+public class BinaryTree
+{
+    public Node root;
+
+    public void BFS(Node root)
+    {
+        if (root == null)
+        {
+            return;
+        }
+
+        CircularQueue queue = new CircularQueue(100); // Assuming a max size of 100 for the queue
+        queue.Enqueue(root.data);
+
+        while (!queue.IsEmpty())
+        {
+            int nodeValue = queue.Dequeue();
+            Console.Write(nodeValue + " ");
+
+            // Find the node corresponding to nodeValue
+            Node node = FindNode(root, nodeValue);
+            
+            if (node.left != null)
+            {
+                queue.Enqueue(node.left.data);
+            }
+
+            if (node.right != null)
+            {
+                queue.Enqueue(node.right.data);
+            }
+        }
+    }
+
+    private Node FindNode(Node root, int value)
+    {
+        if (root == null || root.data == value)
+        {
+            return root;
+        }
+
+        Node leftResult = FindNode(root.left, value);
+        return leftResult != null ? leftResult : FindNode(root.right, value);
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        BinaryTree tree = new BinaryTree();
+        tree.root = new Node(1);
+        tree.root.left = new Node(2);
+        tree.root.right = new Node(3);
+        tree.root.left.left = new Node(4);
+        tree.root.left.right = new Node(5);
+        tree.root.right.left = new Node(6);
+        tree.root.right.right = new Node(7);
+
+        Console.WriteLine("Breadth-First Search (BFS) traversal of the binary tree:");
+        tree.BFS(tree.root);
+    }
+}
+
+```
+
+# Levelorder Traversal
+
+```
+using System;
+
+public class CircularQueue
+{
+    private Node[] elements;
+    private int front;
+    private int rear;
+    private int max;
+
+    public CircularQueue(int size)
+    {
+        elements = new Node[size];
+        front = -1;
+        rear = -1;
+        max = size;
+    }
+
+    public void Enqueue(Node item)
+    {
+        if ((rear + 1) % max == front)
+        {
+            Console.WriteLine("Queue is full");
+            return;
+        }
+
+        if (front == -1)
+        {
+            front = 0;
+        }
+
+        rear = (rear + 1) % max;
+        elements[rear] = item;
+    }
+
+    public Node Dequeue()
+    {
+        if (front == -1)
+        {
+            Console.WriteLine("Queue is empty");
+            return null; // Assuming null indicates an empty queue
+        }
+
+        Node item = elements[front];
+        if (front == rear)
+        {
+            front = -1;
+            rear = -1;
+        }
+        else
+        {
+            front = (front + 1) % max;
+        }
+        return item;
+    }
+
+    public bool IsEmpty()
+    {
+        return front == -1;
+    }
+
+    public bool IsFull()
+    {
+        return (rear + 1) % max == front;
+    }
+}
+
+public class Node
+{
+    public int data;
+    public Node left, right;
+
+    public Node(int item)
+    {
+        data = item;
+        left = right = null;
+    }
+}
+
+public class BinaryTree
+{
+    public Node root;
+
+    public void LevelOrderTraversal(Node root)
+    {
+        if (root == null)
+        {
+            return;
+        }
+
+        CircularQueue queue = new CircularQueue(100); // Assuming a max size of 100 for the queue
+        queue.Enqueue(root);
+
+        while (!queue.IsEmpty())
+        {
+            int levelNodeCount = CalculateLevelNodeCount(queue);
+            
+            while (levelNodeCount > 0)
+            {
+                Node node = queue.Dequeue();
+                Console.Write(node.data + " ");
+
+                if (node.left != null)
+                {
+                    queue.Enqueue(node.left);
+                }
+
+                if (node.right != null)
+                {
+                    queue.Enqueue(node.right);
+                }
+
+                levelNodeCount--;
+            }
+
+            Console.WriteLine();
+        }
+    }
+
+    private int CalculateLevelNodeCount(CircularQueue queue)
+    {
+        int count = 0;
+        int originalFront = queue.front;
+
+        while (originalFront != queue.rear)
+        {
+            count++;
+            originalFront = (originalFront + 1) % queue.max;
+        }
+
+        count++; // To include the rear element
+        return count;
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        BinaryTree tree = new BinaryTree();
+        tree.root = new Node(1);
+        tree.root.left = new Node(2);
+        tree.root.right = new Node(3);
+        tree.root.left.left = new Node(4);
+        tree.root.left.right = new Node(5);
+        tree.root.right.left = new Node(6);
+        tree.root.right.right = new Node(7);
+
+        Console.WriteLine("Level Order Traversal of the binary tree:");
+        tree.LevelOrderTraversal(tree.root);
+    }
+}
+
+
+```
+
+
 ## Binary Search Tree
