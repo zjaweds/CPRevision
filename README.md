@@ -397,9 +397,9 @@ A nonlinear hierarchical data structure comprising `Nodes` connected by `Edges`.
 ![Height and Depth](https://github.com/zjaweds/CPRevision/blob/main/Images/Height.png?raw=true)
   
 ## Binary Tree (Full, Perfect, Complete, Degenerate, Skewed, Balanced, AVL)
-## Tree Traversal (Pre, In, Post)
+## Tree Traversal (Pre, In, Post, BFS, Levelorder)
 
-# Breadth First Search
+### Breadth First Search
 
 ```
 using System;
@@ -546,7 +546,7 @@ class Program
 
 ```
 
-# Levelorder Traversal
+### Levelorder Traversal
 
 ```
 using System;
