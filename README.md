@@ -270,6 +270,76 @@ There are two approaches of solving this problem, it works only on a **sorted** 
 
 # Stack (Array & Linkedlist)
 
+```
+using System;
+
+public class Stack{
+    private string[] stack;
+    private int maxSize;
+    int top;
+    
+    public Stack(int maxSize){
+        this.maxSize = maxSize;
+        this.top = -1;
+        this.stack = new string[maxSize];
+    }
+    
+    private bool IsEmpty(){
+        return this.top == -1;
+    }
+    private bool IsFull(){
+        return this.top == maxSize-1;
+    }
+    
+    public void Push(string data){
+        if(IsFull()) return;
+        this.stack[++top] = data;
+    }
+    public string Pop(){
+        if(IsEmpty()) return "Empty Stack";
+        return this.stack[top--];
+    }
+    public string Peek(){
+        if(IsEmpty()) return "Empty Stack";
+        return this.stack[top];
+    }
+    public int Top(){
+        return this.top;
+    }
+}
+
+public class Program{
+    public static void Main()
+    {
+        Stack stack = new Stack(10);
+        stack.Push("1");
+        stack.Push("2");
+        stack.Push("3");
+        stack.Push("4");
+        Console.WriteLine("Peeked item: " + stack.Peek());
+        Console.WriteLine("Popped item: " + stack.Pop());
+        Console.WriteLine("Popped item: " + stack.Pop());
+        Console.WriteLine("Popped item: " + stack.Pop());
+        Console.WriteLine("Stack after popping an element: ");
+        int x = stack.Top();
+        for (int i = 0; i <= x; i++)
+        {
+            Console.Write(stack.Pop() + " ");
+        }
+        stack.Push("10");
+        stack.Push("20");
+        stack.Push("30");
+        stack.Push("40");
+        Console.WriteLine("Stack after pushing some elements: ");
+        x = stack.Top();
+        for (int i = 0; i <= x; i++)
+        {
+            Console.Write(stack.Pop() + " ");
+        }
+    }
+}
+```
+
 # Queue (Array & Linkedlist)
 ```
 using System;
