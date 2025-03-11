@@ -294,6 +294,19 @@ public class LinkedList{
         temp.next = node;
     }
     
+    public int DeleteNode(Node node){
+        Node temp = this.head;
+        while(temp.next != null && temp.next.data != node.data){
+            temp = temp.next;
+        }
+        if(temp.next.data == node.data){
+            Node dn = temp.next;
+            temp.next = temp.next.next;
+            return dn.data;
+        }
+        return int.MinValue;
+    }
+    
     public void Display(){
         Node temp = this.head;
         while(temp != null){
@@ -317,6 +330,10 @@ public class Program{
         ll.InsertNode(nn);
         nn = new Node(45);
         ll.InsertNode(nn);
+        nn = new Node(35);
+        ll.DeleteNode(nn);
+        nn = new Node(15);
+        ll.DeleteNode(nn);
         ll.Display();
     }
 }
