@@ -276,7 +276,7 @@ using System;
 public class Stack{
     private string[] stack;
     private int maxSize;
-    int top;
+    private int top;
     
     public Stack(int maxSize){
         this.maxSize = maxSize;
