@@ -267,7 +267,60 @@ There are two approaches of solving this problem, it works only on a **sorted** 
 ## Hash Table
 
 # Linkedlist
+```
+using System;
 
+public class Node{
+    public int data;
+    public Node next;
+    
+    public Node(int data){
+        this.data = data;
+        this.next = null;
+    }
+}
+
+public class LinkedList{
+    private Node head;
+    
+    public LinkedList(Node node){
+        this.head = node;
+    }
+    public void InsertNode(Node node){
+        Node temp = this.head;
+        while(temp.next != null){
+            temp = temp.next;
+        }
+        temp.next = node;
+    }
+    
+    public void Display(){
+        Node temp = this.head;
+        while(temp != null){
+            Console.Write(temp.data+"->");
+            temp = temp.next;
+        }
+    }
+}
+
+public class Program{
+    public static void Main(string[] args){
+        Node nn = new Node(10);
+        LinkedList ll = new LinkedList(nn);
+        nn = new Node(5);
+        ll.InsertNode(nn);
+        nn = new Node(15);
+        ll.InsertNode(nn);
+        nn = new Node(25);
+        ll.InsertNode(nn);
+        nn = new Node(35);
+        ll.InsertNode(nn);
+        nn = new Node(45);
+        ll.InsertNode(nn);
+        ll.Display();
+    }
+}
+```
 # Stack (Array & Linkedlist)
 
 ```
