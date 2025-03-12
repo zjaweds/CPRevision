@@ -411,6 +411,77 @@ public class Program{
 ```
 
 # Queue (Array & Linkedlist)
+**Integer Queue**
+```
+using System;
+
+public class Queue
+{
+    int MaxSize = 10;
+    private int[] elements;
+    private int front;
+    private int rear;
+    
+    public Queue(){
+        elements = new int[MaxSize];
+        rear = front = -1;
+    }
+    
+    public bool IsEmpty(){
+        return front == -1;
+    }
+    
+    private bool IsFull(){
+        return rear == MaxSize-1;
+    }
+    
+    public void Enqueue(int data){
+        if(IsFull()) return;
+        if(front == -1){
+            front++;
+            rear++;
+        }
+        else{
+            rear++;
+        }
+        elements[rear] = data;
+    }
+    
+    public int Dequeue(){
+        if(IsEmpty()) return int.MinValue;
+        int data = elements[front];
+        if(front == rear) front = rear = -1;
+        else front++;
+        return data;
+    }
+
+    public static void Main(string[] args)
+    {
+        Console.WriteLine ("Queue Implementation");
+        Queue queue = new Queue();
+        queue.Enqueue(10);
+        Console.WriteLine("Dequeued Element: "+ queue.Dequeue());
+        queue.Enqueue(15);
+        queue.Enqueue(17);
+        queue.Enqueue(20);
+        queue.Enqueue(25);
+        queue.Enqueue(15);
+        queue.Enqueue(17);
+        queue.Enqueue(20);
+        queue.Enqueue(25);
+        Console.WriteLine("Dequeued Element: "+ queue.Dequeue());
+        queue.Enqueue(15);
+        queue.Enqueue(17);
+        queue.Enqueue(20);
+        queue.Enqueue(25);
+        while(!queue.IsEmpty()){
+            Console.Write(queue.Dequeue()+"->");
+        }
+    }
+}
+```
+
+**Generic Queue**
 ```
 using System;
 
