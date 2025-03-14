@@ -608,6 +608,82 @@ A nonlinear hierarchical data structure comprising `Nodes` connected by `Edges`.
 ![Height and Depth](https://github.com/zjaweds/CPRevision/blob/main/Images/Height.png?raw=true)
   
 ## Binary Tree (Full, Perfect, Complete, Degenerate, Skewed, Balanced, AVL)
+# Basic Implementation
+```
+// Online C# Editor for free
+// Write, Edit and Run your C# code using C# Online Compiler
+
+using System;
+
+public class Node{
+    public int data;
+    public Node left, right;
+    
+    public Node(int data){
+        this.data = data;
+        left = right = null;
+    }
+}
+
+public class BinaryTree{
+    public Node root;
+    
+    public BinaryTree(){
+        this.root = null;
+    }
+    
+    // LevelOrderInsertion
+    public Node LevelorderInsertion(int[] arr, Node root, int i){
+        if(i<arr.Length){
+            Node temp = new Node(arr[i]);
+            root = temp;
+            root.left = LevelorderInsertion(arr, root.left, 2*i+1);
+            root.right = LevelorderInsertion(arr, root.right, 2*i+2);
+        }
+        return root;
+    }
+    
+    // InorderTraversal
+    public void InorderTraversal(Node root){
+        if(root == null) return;
+        InorderTraversal(root.left);
+        Console.Write(root.data+ "->");
+        InorderTraversal(root.right);
+    }
+    // PreorderTraversal
+    public void PreorderTraversal(Node root){
+        if(root == null) return;
+        Console.Write(root.data+"->");
+        PreorderTraversal(root.left);
+        PreorderTraversal(root.right);
+    }
+    // PostorderTraversal
+    public void PostorderTraversal(Node root){
+        if(root == null) return;
+        PostorderTraversal(root.left);
+        PostorderTraversal(root.right);
+        Console.Write(root.data+ "->");
+    }
+    
+    public static void Main(string[] args){
+        BinaryTree bt = new BinaryTree();
+        int[] nodes = new int[50];
+        for(int i=0; i<50; i++){
+            nodes[i] = i;
+        }
+        Node root = bt.LevelorderInsertion(nodes, bt.root, 0);
+        Console.WriteLine("Preorder Traversal");
+        bt.PreorderTraversal(root);
+        Console.WriteLine("");
+        Console.WriteLine("Inorder Traversal");
+        bt.InorderTraversal(root);
+        Console.WriteLine("");
+        Console.WriteLine("Postorder Traversal");
+        bt.PostorderTraversal(root);
+    }
+}
+```
+
 ## Tree Traversal (Pre, In, Post, BFS, Levelorder)
 
 ### Breadth First Search
