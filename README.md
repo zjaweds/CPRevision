@@ -993,3 +993,47 @@ class Program
 
 
 ## Binary Search Tree
+
+
+# String Algorithms
+## Palindrome
+### [Manacher's Algorithm for Longest Palindromic Substring](https://www.scaler.in/manachers-algorithm/#:~:text=Manacher's%20algorithm-,Manacher's%20algorithm%20is%20used%20to%20find%20the%20longest%20palindromic%20substring,substrings%20with%20odd%20lengths%20only.)
+
+```
+
+public class Solution {
+    public string LongestPalindrome(string s) {
+        int sL = 2 * s.Length + 3;
+        char[] sChar = new char[sL];
+        sChar[0] = '@';
+        sChar[sL-1] = '$';
+        int t = 1;
+        foreach(var c in s){
+            sChar[t++] = '#';
+            sChar[t++] = c;
+        }
+        sChar[t] = '#';
+        int[] p = new int[sL];
+        int start, center, maxRight, maxLen;
+        start = center = maxRight = maxLen = 0;
+        for(int i=1; i<sL-1; i++){
+            if(i<maxRight){
+                p[i] = Math.Min(maxRight - i, p[2*center -i]);
+            }
+            while(sChar[i-p[i]-1] == sChar[i+p[i]+1]){
+                p[i]++;
+            }
+            if(i+p[i] > maxRight){
+                center = i;
+                maxRight = i+p[i];
+            }
+            if(p[i] > maxLen){
+                start = (i-p[i]-1)/2;
+                maxLen = p[i];
+            }
+        }
+        return s.Substring(start, maxLen);
+    }
+}
+
+```
