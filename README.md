@@ -1222,3 +1222,6 @@ print(count_ones_upto_n(2345))  # Output: 1775
 ---
 
 If you want to modify this to count any other digit (e.g., `2`, `3`, etc.), there’s a generalized version. Want me to walk you through that next? 😊
+
+
+[Number of 1s in 1 to n](https://stackoverflow.com/questions/35244719/count-the-total-number-of-1s-in-integers-from-1-to-n)
