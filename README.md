@@ -1226,3 +1226,219 @@ If you want to modify this to count any other digit (e.g., `2`, `3`, etc.), ther
 
 
 [Number of 1s in 1 to n](https://stackoverflow.com/questions/35244719/count-the-total-number-of-1s-in-integers-from-1-to-n)
+
+# Graph
+
+# Graph Data Structure for Programmers
+
+A **Graph** is a non-linear data structure representing a network of points connected by links. Unlike Trees, Graphs do not have a root-level starting point and can form complex, multi-directional relationships.
+
+---
+
+## 1. Core Components
+*   **Vertices (Nodes):** The objects or data points (e.g., users, cities, web pages).
+*   **Edges (Links):** The connections between nodes (e.g., friendships, roads, hyperlinks).
+
+Mathematically, a graph is represented as **$G = (V, E)$**.
+
+---
+
+## 2. Graph Classifications
+
+
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| **Direction** | **Undirected** | Relationships are mutual ($A \leftrightarrow B$). |
+| | **Directed** | Relationships have a direction ($A \to B$). |
+| **Weight** | **Unweighted** | All edges are considered equal. |
+| | **Weighted** | Edges have values like distance, cost, or time. |
+| **Cycles** | **Cyclic** | You can return to a starting node via a path. |
+| | **Acyclic** | No path exists that loops back to the same node. |
+
+---
+
+## 3. Programmatic Representations
+
+### A. Adjacency List (Most Common)
+An array or dictionary where each key is a node and its value is a list of connected neighbors.
+*   **Space Complexity:** $O(V + E)$
+*   **Best For:** Sparse graphs (where nodes have few connections).
+
+```csharp
+// Example in C#
+Dictionary<int, List<int>> adjList = new()
+{
+    [0] = [1, 2], // Node 0 connects to 1 and 2
+    [1] = [0, 3], // Node 1 connects to 0 and 3
+    [2] = [0],    // Node 2 connects to 0
+    [3] = [1]     // Node 3 connects to 1
+};
+```
+### B. Adjacency Matrix
+
+A 2D array where matrix[i][j] represents the presence (and weight) of an edge between node i and node j.
+* **Space Complexity**: $O(V^2)$
+* **Best For**: Dense graphs or fast edge-existence lookups.
+```
+// Example in C# (1 = Edge exists, 0 = No edge)
+int[,] matrix = {
+    { 0, 1, 1, 0 },
+    { 1, 0, 0, 1 },
+    { 1, 0, 0, 0 },
+    { 0, 1, 0, 0 }
+};
+```
+## 4. Key Algorithms
+* **BFS (Breadth-First Search)**: Explores neighbours first. Uses a Queue. (Shortest path in unweighted graphs).
+* **DFS (Depth-First Search)**: Explores as far as possible along a branch before backtracking. Uses Recursion or a Stack.
+* **Dijkstra’s Algorithm**: Finds the shortest path in a weighted graph.
+
+![Graph Representation](Images/Graph_Representation.png)
+
+### BFS Algorithm
+#### Undirected, Disconnected Graphs
+
+For an **undirected graph** that may be **disconnected** (composed of multiple "islands"), the Breadth-First Search (BFS) must be wrapped in a loop that checks every vertex. This ensures that every component of the graph is traversed.
+
+---
+
+### 1. The Algorithm Logic
+
+1.  **Initialize** a `visited` boolean array of size $V$, with all values set to `false`.
+2.  **Iterate** through every vertex $i$ from $0$ to $V-1$:
+    *   **If** vertex $i$ is not `visited`:
+        *   Launch a **BFS** starting from vertex $i$.
+3.  **The BFS Procedure**:
+    *   Create an empty **Queue** and enqueue the starting node.
+    *   Mark the starting node as `visited`.
+    *   **While** the Queue is not empty:
+        *   **Dequeue** the current node.
+        *   **Process** the node (e.g., print it).
+        *   For each **neighbor** of the current node:
+            *   **If** the neighbor has not been `visited`:
+                *   Mark it as `visited`.
+                *   **Enqueue** the neighbor.
+
+---
+*   **Space Complexity:** $O(V + E)$
+*   **Time Complexity:** $O(V)$
+
+### 2. Implementation (C#)
+
+Based on the **Adjacency List** representation (best for space efficiency as shown in the image), here is the implementation:
+
+```csharp
+using System;
+using System.Collections.Generic;
+
+public class GraphBfs
+{
+    public List<int> Traversal(List<int>[] adj)
+    {
+        int V = adj.Length;
+        bool[] visited = new bool[V];
+        List<int> res = [];
+        // Loop handles disconnected components (G1, G2, etc.)
+        for (int i = 0; i < V; i++)
+        {
+            if (!visited[i])
+            {
+                PerformBfs(adj, i, visited);
+            }
+        }
+        return res;
+    }
+    // For connected graph
+    private void PerformBfs(List<int>[] adj, int node, bool[] visited, List<int> res)
+    {
+        Queue<int> queue = new();
+
+        visited[node] = true;
+        queue.Enqueue(node);
+
+        while (queue.Count > 0)
+        {
+            int curr = queue.Dequeue();
+            res.Add(curr);
+            foreach (int neighbor in adj[curr])
+            {
+                if (!visited[neighbor])
+                {
+                    visited[neighbor] = true;
+                    queue.Enqueue(neighbor);
+                }
+            }
+        }
+    }
+}
+```
+
+### DFS Algorithm
+
+#### Undirected Graphs
+
+Depth-First Search is an algorithm for traversing or searching tree or graph data structures. The algorithm starts at a root node (selecting some arbitrary node as the root in the case of a graph) and explores as far as possible along each branch before backtracking.
+
+---
+
+### 1. The Algorithm Logic
+
+For an **undirected, unweighted graph** that may be **disconnected**, the algorithm follows these steps:
+
+1.  **Initialize** a `visited` boolean array of size $V$ (number of vertices) to `false`.
+2.  **Iterate** through every vertex $i$ from $0$ to $V-1$:
+    *   **If** vertex $i$ is not `visited`:
+        *   Start a recursive **DFS** call for vertex $i$.
+3.  **The Recursive Procedure**:
+    *   Mark the current node as `visited`.
+    *   **Process** the node (e.g., print its value).
+    *   For each **neighbor** of the current node:
+        *   **If** the neighbor has not been `visited`:
+            *   Recursively call the DFS function for that neighbor.
+
+---
+*   **Space Complexity:** $O(V + E)$
+*   **Time Complexity:** $O(V)$
+### 2. Implementation (C#)
+
+Following the **Adjacency List** representation ($G_1$ in the infographic), which is best for space efficiency ($O(V+E)$):
+
+```csharp
+using System;
+using System.Collections.Generic;
+
+public class GraphDfs
+{
+    public List<int> Traversal(List<int>[] adj)
+    {
+        int V = adj.Length;
+        bool[] visited = new bool[V];
+        List<int> res = [];
+
+        // Loop ensures all disconnected components are visited
+        for (int i = 0; i < V; i++)
+        {
+            if (!visited[i])
+            {
+                PerformDfs(adj, i, visited, res);
+            }
+        }
+        return res;
+    }
+
+    private void PerformDfs(List<int>[] adj, int curr, bool[] visited, List<int> res)
+    {
+        // Mark node as visited and process it
+        visited[curr] = true;
+        res.Add(curr);
+
+        // Recursively visit all unvisited neighbors
+        foreach (int neighbor in adj[curr])
+        {
+            if (!visited[neighbor])
+            {
+                PerformDfs(adj, neighbor, visited, res);
+            }
+        }
+    }
+}
