@@ -1442,3 +1442,393 @@ public class GraphDfs
         }
     }
 }
+```
+
+## Cycle Detection Undirected Graph
+
+Detecting a cycle in an **undirected graph** (like $G_1$ in the infographic) requires tracking the **parent** of each node during traversal. Because an undirected edge between $U$ and $V$ is bidirectional ($U \leftrightarrow V$), we must distinguish between a genuine cycle and simply moving back to the node we just came from.
+
+---
+
+### 1. The Algorithm Logic (DFS Approach)
+
+The most efficient way to detect a cycle is using **Depth-First Search (DFS)**. 
+
+1.  **Initialize** a `visited` boolean array of size $V$ to `false`.
+2.  **Iterate** through every vertex $i$ from $0$ to $V-1$:
+    *   **If** vertex $i$ is not `visited`:
+        *   Start a recursive **DFS** call passing the current node and a `parent` (initially -1).
+3.  **The Recursive Procedure**:
+    *   Mark the current node as `visited`.
+    *   For each **neighbor** of the current node:
+        *   **Case A:** If the neighbor is **not visited**:
+            *   Recursively call the function for this neighbor. If it returns `true`, a cycle exists.
+        *   **Case B:** If the neighbor is **already visited** AND it is **not the parent**:
+            *   **Cycle Detected!** This means we found another path to an already visited node that isn't the immediate return path.
+
+---
+
+*   **Space Complexity:** $O(V + E)$
+*   **Time Complexity:** $O(V)$
+
+### 2. Implementation (C#)
+
+Following the **Adjacency List** representation shown in the image for $G_1$:
+
+```csharp
+using System;
+using System.Collections.Generic;
+
+public class GraphCycleDetection
+{
+    public bool HasCycle(List<int>[] adj)
+    {
+        int V = adj.Length;
+        bool[] visited = new bool[V];
+
+        // Loop to handle disconnected components
+        for (int i = 0; i < V; i++)
+        {
+            if (!visited[i])
+            {
+                // Start DFS with parent as -1
+                if (IsCyclicRecursive(adj, i, -1, visited))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private bool IsCyclicRecursive(List<int>[] adj, int curr, int parent, bool[] visited)
+    {
+        visited[curr] = true;
+
+        foreach (int neighbor in adj[curr])
+        {
+            // If neighbor is not visited, recurse
+            if (!visited[neighbor])
+            {
+                if (IsCyclicRecursive(adj, neighbor, curr, visited))
+                    return true;
+            }
+            // If visited neighbor is not the parent, we found a cycle
+            else if (neighbor != parent)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+```
+
+### Cycle Detection in Undirected Graphs (BFS Approach)
+
+While DFS is the most common method, **Breadth-First Search (BFS)** can also detect cycles in undirected graphs ($G_1$ in the infographic). The logic relies on tracking the **parent** of each node to distinguish between a "return path" and a "genuine cycle."
+
+---
+
+### 1. The Algorithm Logic
+
+1.  **Initialize** a `visited` boolean array and a `parent` array (both size $V$). Set all `parent` values to `-1`.
+2.  **Iterate** through every vertex $i$ from $0$ to $V-1$ (to handle disconnected components).
+    *   **If** vertex $i$ is not `visited`:
+        *   Start a **BFS** from vertex $i$.
+3.  **The BFS Procedure**:
+    *   Create a **Queue** and enqueue the starting node.
+    *   Mark the starting node as `visited`.
+    *   **While** the Queue is not empty:
+        *   **Dequeue** the current node `curr`.
+        *   For each **neighbor** of `curr`:
+            *   **Case A:** If the neighbor is **not visited**:
+                *   Mark it as `visited`.
+                *   Set `parent[neighbor] = curr`.
+                *   **Enqueue** the neighbor.
+            *   **Case B:** If the neighbor is **already visited** AND it is **not the parent** of `curr`:
+                *   **Cycle Detected!** We reached a visited node through a different path.
+
+---
+*   **Space Complexity:** $O(V + E)$
+    * In the worst case, every vertex $(V)$ and every edge $(E)$ is explored. 
+*   **Time Complexity:** $O(V)$
+    * Required for the visited array and the queue
+
+### 2. Implementation (C#)
+
+Following the **Adjacency List** model ($O(V+E)$ space) for the undirected graph $G_1$:
+
+```csharp
+using System;
+using System.Collections.Generic;
+
+public class GraphCycleDetection
+{
+    public bool HasCycle(List<int>[] adj)
+    {
+        int V = adj.Length;
+        bool[] visited = new bool[V];
+
+        for (int i = 0; i < V; i++)
+        {
+            if (!visited[i])
+            {
+                if (CheckCycleBfs(adj, i, visited))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private bool CheckCycleBfs(List<int>[] adj, int src, bool[] visited)
+    {
+        // Store (current_node, parent_node) in the queue
+        Queue<(int curr, int parent)> queue = new();
+
+        visited[src] = true;
+        queue.Enqueue((src, -1));
+
+        while (queue.Count > 0)
+        {
+            var (curr, parent) = queue.Dequeue();
+
+            foreach (int neighbor in adj[curr])
+            {
+                if (!visited[neighbor])
+                {
+                    visited[neighbor] = true;
+                    queue.Enqueue((neighbor, curr));
+                }
+                // If neighbor is visited and not the parent, a cycle exists
+                else if (neighbor != parent)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
+
+```
+
+## Topological Sort for Directed Acyclic Graphs (DAG)
+
+Topological Sort is a linear ordering of vertices such that for every directed edge $u \to v$, vertex **$u$** comes before **$v$** in the ordering. This is essential for scheduling tasks, resolving dependencies, and compiling code.
+
+---
+
+### 1. Crucial Requirements
+*   **Directed Graph ($G_2$ or $G_3$):** Relationships must have a direction.
+*   **Acyclic:** The graph **must not** contain cycles. If a cycle exists ($A \to B \to A$), no linear ordering is possible.
+
+---
+
+### 2. Algorithm 1: Kahn's Algorithm (BFS Approach)
+Kahn's algorithm uses the **In-Degree** of nodes (the number of incoming edges).
+
+#### The Logic:
+1.  **Calculate In-Degree:** For every node, count how many edges point to it.
+2.  **Initialize Queue:** Enqueue all nodes with an **In-Degree of 0** (nodes with no dependencies).
+3.  **Process Queue:**
+    *   Dequeue a node `u` and add it to the topological order.
+    *   For each neighbor `v` of `u`:
+        *   Decrement the In-Degree of `v`.
+        *   If `v`'s In-Degree becomes **0**, enqueue it.
+4.  **Check for Cycles:** If the final order contains fewer nodes than the total vertices, the graph has a cycle.
+
+* **Time Complexity**: $O(V+E)$
+    * Similar to standard DFS, we visit every vertex $(V)$ and every outgoing edge $(E)$ exactly once.
+* **Space Complexity**: $O(V)$ 
+    * Used for the visited array, the Stack, and the Recursion Stack in memory.
+
+
+#### C# Implementation:
+```csharp
+public List<int> KahnTopologicalSort(int V, List<int>[] adj) {
+    int[] inDegree = new int[V];
+    foreach (var list in adj) {
+        foreach (int neighbor in list) inDegree[neighbor]++;
+    }
+
+    Queue<int> queue = new();
+    for (int i = 0; i < V; i++) {
+        if (inDegree[i] == 0) queue.Enqueue(i);
+    }
+
+    List<int> topoOrder = [];
+    while (queue.Count > 0) {
+        int u = queue.Dequeue();
+        topoOrder.Add(u);
+
+        foreach (int v in adj[u]) {
+            if (--inDegree[v] == 0) queue.Enqueue(v);
+        }
+    }
+
+    return topoOrder.Count == V ? topoOrder : throw new Exception("Graph has a cycle!");
+}
+```
+
+# Topological Sort: DFS-Based Approach
+
+The **Depth-First Search (DFS)** approach to Topological Sorting uses a **Stack** to store nodes after their neighbors have been fully explored. This is particularly effective for graphs like **$G_2$** and **$G_3$** in the infographic.
+
+---
+
+### 1. The Algorithm Logic
+
+1.  **Initialize** a `visited` boolean array of size $V$ to `false`.
+2.  **Initialize** an empty **Stack** to store the result.
+3.  **Iterate** through every vertex $i$ from $0$ to $V-1$:
+    *   **If** vertex $i$ is not `visited`:
+        *   Start the recursive **DFS procedure**.
+4.  **The Recursive Procedure**:
+    *   Mark the current node as `visited`.
+    *   For each **neighbor** of the current node:
+        *   **If** the neighbor is not `visited`, recursively call the DFS for that neighbor.
+    *   **Crucial Step:** Once all neighbors of the current node are fully explored, **Push** the current node onto the Stack.
+5.  **Final Step:** Pop all elements from the Stack to get the topological order.
+
+---
+
+### 2. Implementation (C#)
+
+Following the **Adjacency List** model for directed graphs ($G_2$):
+
+```csharp
+using System;
+using System.Collections.Generic;
+
+public class GraphTopologicalSort
+{
+    public void TopoSort(List<int>[] adj)
+    {
+        int V = adj.Length;
+        bool[] visited = new bool[V];
+        Stack<int> stack = new();
+
+        // Visit every node to handle disconnected components
+        for (int i = 0; i < V; i++)
+        {
+            if (!visited[i])
+            {
+                DfsRecursive(adj, i, visited, stack);
+            }
+        }
+
+        // Output the results by popping from the stack
+        Console.WriteLine("Topological Sort Order:");
+        while (stack.Count > 0)
+        {
+            Console.Write(stack.Pop() + " ");
+        }
+    }
+
+    private void DfsRecursive(List<int>[] adj, int curr, bool[] visited, Stack<int> stack)
+    {
+        visited[curr] = true;
+
+        foreach (int neighbor in adj[curr])
+        {
+            if (!visited[neighbor])
+            {
+                DfsRecursive(adj, neighbor, visited, stack);
+            }
+        }
+
+        // All neighbors are explored, now push current node to stack
+        stack.Push(curr);
+    }
+}
+```
+# Cycle Detection in Directed Graphs
+
+Detecting a cycle in a **Directed Graph** (like $G_2$ or $G_3$ in the infographic) is more complex than in an undirected graph. Because edges have a specific direction, simply reaching a visited node does not guarantee a cycle; instead, we must find a **back-edge** to a node currently in the **Recursion Stack**.
+
+---
+
+### 1. The Algorithm Logic (DFS Approach)
+
+The standard approach uses **Depth-First Search (DFS)** and maintains two tracking mechanisms:
+1.  **Visited Array:** Tracks all nodes that have been fully processed.
+2.  **Recursion Stack Array:** Tracks nodes that are currently "active" in the current DFS path.
+
+#### The Procedure:
+1.  **Initialize** two boolean arrays: `visited` and `recStack` (both size $V$).
+2.  **Iterate** through every vertex $i$ from $0$ to $V-1$:
+    *   If vertex $i$ is not `visited`, start the recursive **DFS**.
+3.  **In the DFS Recursive Function**:
+    *   Mark the current node as `visited` AND add it to `recStack`.
+    *   For each **neighbor** of the current node:
+        *   **Case A:** If the neighbor is not `visited`, recurse. If it returns `true`, a cycle exists.
+        *   **Case B:** If the neighbor is already in `recStack`, **Cycle Detected!** (A back-edge was found).
+    *   **Crucial Step:** Once the function finishes exploring neighbors, remove the current node from `recStack` (backtrack).
+
+---
+* **Time Complexity**: $O(V+E)$
+    * Each vertex and edge is visited once.
+* **Space Complexity**: $O(V)$ 
+    * Required for the visited array, recStack array, and the function call stack.
+
+### 2. Implementation (C#)
+
+Following the **Adjacency List** model ($O(V+E)$ space) for the directed graph $G_2$:
+
+```csharp
+using System;
+using System.Collections.Generic;
+
+public class DirectedCycleDetection
+{
+    public bool HasCycle(List<int>[] adj)
+    {
+        int V = adj.Length;
+        bool[] visited = new bool[V];
+        bool[] recStack = new bool[V];
+
+        for (int i = 0; i < V; i++)
+        {
+            if (!visited[i])
+            {
+                if (IsCyclicRecursive(adj, i, visited, recStack))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private bool IsCyclicRecursive(List<int>[] adj, int curr, bool[] visited, bool[] recStack)
+    {
+        // 1. Mark node as visited and add to recursion stack
+        visited[curr] = true;
+        recStack[curr] = true;
+
+        foreach (int neighbor in adj[curr])
+        {
+            // If neighbor not visited, recurse
+            if (!visited[neighbor])
+            {
+                if (IsCyclicRecursive(adj, neighbor, visited, recStack))
+                    return true;
+            }
+            // If neighbor is currently in recursion stack, a cycle is found
+            else if (recStack[neighbor])
+            {
+                return true;
+            }
+        }
+
+        // 2. Remove node from recursion stack (backtrack)
+        recStack[curr] = false;
+        return false;
+    }
+}
+```
+### 4. Why "Parent Tracking" Fails Here
+In an undirected graph, reaching any visited node (that isn't the parent) is a cycle. In a directed graph, reaching a visited node that is not in the current recursion stack is simply a cross-edge or forward-edge, which does not form a cycle.
+Example: ```0->1``` and ```0->2```.
+
+Node 1 is visited twice, but there is no cycle.
+
+## 5. Alternative: Kahn's Algorithm (BFS)
+You can also detect cycles using Kahn's Algorithm (Topological Sort). If the final topological sort contains fewer than $(V)$ nodes, the graph has at least one cycle.
