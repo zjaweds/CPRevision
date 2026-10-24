@@ -106,6 +106,15 @@ static List<int> LevelOrder(TreeNode? root)
 ```
 All traversals visit each node once: O(n) time and O(h) recursion space for DFS (worst-case O(n)), or O(w) queue space for BFS, where w is maximum tree width.
 
+```text
+          A                 BFS levels:  A | B, C | D, E, F
+        /   \
+       B     C             DFS preorder:  A, B, D, E, C, F
+      / \     \
+     D   E     F           DFS inorder:   D, B, E, A, C, F
+                           DFS postorder: D, E, B, F, C, A
+```
+
 ### Binary Search Trees
 A BST maintains invariant:
 - left subtree values < node
@@ -186,6 +195,20 @@ Time complexity:
 An array-backed binary heap keeps parent/child positions implicit: children of index `i` are `2*i+1` and `2*i+2`. Insert appends and sifts up; extraction swaps the root with the last item and sifts down.
 
 **Heapify** builds a valid heap from an existing array. Start at the last internal node (`n / 2 - 1`) and sift each node down toward the root. This bottom-up process is O(n), not O(n log n): most nodes are near the leaves and move only a short distance. Inserting n values individually is O(n log n). The `Heapify` method below demonstrates the bottom-up algorithm; .NET's `PriorityQueue<TElement, TPriority>` is also available for standard priority-queue operations.
+
+```text
+Input array: [9, 4, 7, 1, 0, 3]       Min-heap after heapify:
+             9                                0
+           /   \                            /   \
+          4     7                          1     3
+         / \   /                          / \
+        1   0 3                          9   4
+
+Parent index i: 0..n/2-1 (processed from right to left)
+Children: 2*i+1 and 2*i+2
+```
+
+The ordering within each level is not sorted; the only promise is parent <= child. Therefore the root is the minimum, but reading the heap array does not return all values in sorted order.
 
 ```csharp
 // Bottom-up heapify is O(n); repeated insertion is O(n log n).
@@ -275,6 +298,18 @@ An adjacency list stores one neighbor collection per vertex and takes O(V+E) spa
 
 BFS marks a vertex when it is enqueued, ensuring it is queued once and first discovered at minimum edge distance. DFS uses a stack (or recursion) to follow a branch before backtracking. Both take O(V+E) time and O(V) auxiliary space for a complete traversal.
 
+```text
+       A                 BFS from A:
+      / \                distance 0: A
+     B   C               distance 1: B, C
+    /     \              distance 2: D, E
+   D       E
+
+BFS queue (one possible order): [A] -> [B, C] -> [C, D] -> [D, E]
+```
+
+The exact order among vertices at the same distance depends on neighbor ordering. DFS instead follows one branch as far as possible, then backtracks.
+
 ```csharp
 static Dictionary<string, int> BfsDistances(
     Dictionary<string, List<string>> graph, string start)
@@ -346,11 +381,25 @@ Used when tasks depend on earlier tasks.
 
 In Kahn's algorithm, compute each vertex's indegree, enqueue all zero-indegree vertices, then remove their outgoing edges and enqueue newly-zero vertices. If the output contains fewer than V vertices, a cycle exists, so no topological order is possible. Both Kahn and DFS variants run in O(V+E).
 
+```text
+Dependencies:  A -> C <- B,   C -> D
+Zero-indegree first: A, B
+One valid topological order: A, B, C, D
+```
+
+The order is not necessarily unique; every arrow's source must simply appear before its destination.
+
 ### Minimum spanning tree
 - Prim's algorithm: grows a tree from a frontier
 - Kruskal's algorithm: sorts edges and unions components
 
 An MST is defined for a weighted, undirected graph. Kruskal sorts edges and accepts an edge only when Union-Find says its endpoints are in different components; complexity is O(E log E). Prim grows from one start vertex, repeatedly taking the lightest edge to an unvisited vertex; with an adjacency list and heap it is O(E log V). Both select V−1 edges for a connected graph; a disconnected graph instead has a minimum spanning forest.
+
+```text
+Weighted graph edges: A-B(1), A-C(4), B-C(2), B-D(5), C-D(1)
+MST:                 A --1-- B --2-- C --1-- D
+                     selected edges: AB, BC, CD; total weight = 4
+```
 
 Bellman-Ford, topological-sort, Kruskal, and Prim reference implementations are provided in Section 17.17. For cycle detection, distinguish directed from undirected graphs; an undirected Union-Find test is not a correct directed-cycle test.
 
@@ -392,6 +441,15 @@ They are used for:
 - consider load factor and rehashing when the table becomes full
 
 A hash function maps a key to a bucket; collisions are resolved either by **chaining** (multiple entries per bucket) or **open addressing** (probe alternate array slots). As load factor rises, resizing and rehashing spreads entries over a larger bucket array. Expected lookup/insert/delete is O(1), but heavy collisions can make an operation O(n).
+
+```text
+Chaining                         Open addressing (linear probe)
+bucket 0 -> (key A)              slot 0: key A
+bucket 1 -> (key B) -> (key C)   slot 1: key C  <- collided, next free slot
+bucket 2 -> empty                slot 2: empty
+```
+
+Both examples assume B and C happen to hash to bucket/slot 1. Chaining keeps multiple entries in that bucket; open addressing searches another slot according to its probing rule.
 
 ```csharp
 var counts = new Dictionary<string, int>();
@@ -446,6 +504,15 @@ Decide explicitly whether case, whitespace, punctuation, and Unicode normalizati
 
 KMP's LPS array stores, for each pattern prefix, the length of its longest proper prefix that is also a suffix. After a mismatch, this tells the search where to resume in the pattern without moving the text pointer backward; total time is O(n+m).
 
+```text
+Pattern:  A B A B A C
+Index:    0 1 2 3 4 5
+LPS:      0 0 1 2 3 0
+
+Mismatch after matching "ABAB":
+reuse the suffix "AB" (LPS = 2), rather than restarting at pattern index 0.
+```
+
 #### Z algorithm
 - computes longest prefix match for each suffix
 - useful for efficient substring searches
@@ -470,6 +537,18 @@ Use cases:
 Time complexity for insertion/search is O(length of word), often better than naive scanning across many strings.
 
 Each trie node maps a character to a child node and has an end-of-word marker. The marker distinguishes a complete stored word from a prefix: if `"car"` and `"cart"` are stored, reaching the node for `r` does not by itself prove `"car"` is a word.
+
+```text
+Words: car, cart, cat
+
+root
+ └─ c
+     └─ a
+         ├─ r* ─ t*
+         └─ t*
+
+* marks the end of a complete word; shared prefixes share nodes.
+```
 
 ```csharp
 sealed class TrieNode
@@ -523,6 +602,12 @@ Sorting is often a prerequisite for more advanced logic, and interview problems 
 - good for external sorting and predictable performance
 
 Merge sort divides the input, recursively sorts each half, then merges two sorted halves by repeatedly taking the smaller front item. The merge is O(n), giving O(n log n) total time and O(n) auxiliary space. Taking from the left first on ties preserves stability.
+
+```text
+[7, 2, 6, 3]       split        [7, 2]   [6, 3]
+                  sort             [2, 7]   [3, 6]
+                  merge       [2, 3, 6, 7]
+```
 
 #### Quick sort
 - in-place average O(n log n)
@@ -589,6 +674,13 @@ static int LowerBound(int[] values, int target)
 }
 ```
 This returns the insertion position of the first value at least target in O(log n). The same boundary search works for a monotonic false-then-true predicate. Merge sort, counting sort, radix sort, and additional search examples are in Section 17.8 and 17.18.
+
+```text
+Sorted values: [1, 3, 5, 7, 9, 11]   target = 7
+                 L        M       H
+First check middle; keep only the half that can contain the lower bound.
+Continue until [low, high) is empty; low is the insertion index.
+```
 
 ## 7. Recursion and Divide and Conquer
 
@@ -694,6 +786,17 @@ Examples:
 
 For 0/1 knapsack, `dp[c]` means best value using processed items and capacity c. Iterate capacity downward so an item cannot be reused during its own iteration:
 
+```text
+Each row is after considering one more item:
+          capacity -> 0  1  2  3  4
+no items             0  0  0  0  0
+item (w=2, v=3)       0  0  3  3  3
+item (w=3, v=4)       0  0  3  4  4
+best value at cap 4 = 4
+```
+
+The table is a visualization of the state; the one-dimensional C# code compresses rows because each transition needs only the previous row. Descending capacity preserves that previous-row meaning.
+
 ```csharp
 static int Knapsack(int[] weights, int[] values, int capacity)
 {
@@ -727,6 +830,15 @@ Greedy works only when the problem satisfies a matroid-like or exchange property
 - many problems need a proof of correctness before trust
 
 For interval scheduling, choosing the compatible interval with the earliest finishing time is safe: it leaves maximum room for all later choices. Sorting by finish time followed by a single scan gives O(n log n).
+
+```text
+time: 0----2----4----6----8----10
+A:    [------]
+B:         [------]
+C:              [------]
+D:                   [------]
+Choose earliest finish first; then keep each interval whose start >= last finish.
+```
 
 ```csharp
 static List<(int Start, int End)> SelectActivities(List<(int Start, int End)> intervals)
@@ -769,6 +881,16 @@ Backtracking can be exponential, but pruning often makes it feasible on reasonab
 
 At each step, choose, recurse, and undo the choice. A subset search has two branches per item and produces 2^n subsets, so the output alone is exponential. Prune only when a partial state cannot lead to a valid solution; for N-Queens, reject a placement if its column or either diagonal is already occupied.
 
+```text
+                 choose item 1?
+                  /       \
+              exclude     include
+              /   \        /   \
+          exclude include exclude include
+
+Every root-to-leaf path is one subset. Invalid partial paths can be cut off early.
+```
+
 ```csharp
 static List<List<int>> Subsets(int[] values)
 {
@@ -796,6 +918,18 @@ Union-Find manages partitioning elements into connected groups, supporting:
 - union two sets
 
 Each component is represented by a root. `find` follows parent links to the root; `union` links roots only if they differ. Path compression points visited nodes directly toward the root, while union by size attaches the smaller component under the larger:
+
+```text
+Before union:                   After union:
+root A          root B          root A
+  |                |           /     \
+ member 1        member 2   member 1  root B
+                                      /   \
+                                 member 2 member 3
+
+find(3) follows parent links to the component root; path compression shortens
+that path on later finds.
+```
 
 ```csharp
 sealed class Dsu
@@ -899,6 +1033,18 @@ Operations:
 
 Each node summarizes an interval; its two children summarize the left and right halves, and the parent combines their summaries (sum, min, max, etc.). A query combines only fully covered nodes and descends along interval boundaries. A point update changes its leaf then recomputes summaries along the root path. Lazy propagation is needed for many efficient range-update operations. A complete range-sum implementation is in Section 17.19.
 
+```text
+Values: [2, 1, 3, 4]
+                   [0..3]=10
+                  /         \
+            [0..1]=3       [2..3]=7
+             /   \          /   \
+          [2]   [1]       [3]   [4]
+
+Query [1..2] combines the covered leaves 1 and 3: sum = 4.
+Update index 2: replace leaf 3, then recompute its ancestors.
+```
+
 ### Fenwick tree
 A Fenwick tree is a more compact alternative for cumulative frequency-like operations.
 
@@ -908,6 +1054,13 @@ Use cases:
 - rank queries
 
 Fenwick index i stores a range determined by its lowest set bit `i & -i`. A point update advances by `i += i & -i`; a prefix query moves backward by `i -= i & -i`. Both run in O(log n), and a range sum is `prefix(right) - prefix(left - 1)`. See Section 17.15 for a complete implementation.
+
+```text
+1-based Fenwick indices:  1   2   3   4   5   6   7   8
+Stored range lengths:     1   2   1   4   1   2   1   8
+                              ^       ^           ^
+                           lowbit(i) = i & -i determines each range.
+```
 
 ### Trie
 Useful for large sets of strings where prefix operations matter.
@@ -974,6 +1127,76 @@ The best interview performance comes from clear reasoning:
 
 The goal is not just to produce code; it is to demonstrate that you can think like a problem solver.
 
+## Quick Revision Sheet
+
+Use this section for a fast review before an interview. The longer explanations and C# examples are in the matching chapters above and the companion examples in Section 17.
+
+### Choose the model first
+
+| Problem clue | Likely tool | Key reason |
+|---|---|---|
+| Hierarchy; process children or levels | Tree traversal | DFS uses recursion/stack; BFS uses a queue |
+| Relationships, reachability, dependencies | Graph + BFS/DFS | Visit vertices and edges without repeating work |
+| Fewest edges in an unweighted graph | BFS | First discovery is the shortest edge-count path |
+| Weighted shortest path, all weights non-negative | Dijkstra + priority queue | Expand the cheapest tentative distance |
+| Negative edge weights | Bellman-Ford | Repeatedly relax every edge; detect reachable negative cycles |
+| Prerequisite ordering | Topological sort | Valid only for a directed acyclic graph |
+| Cheapest connection of all vertices | Prim or Kruskal | Both construct a minimum spanning tree |
+| Fast key lookup/counting | `Dictionary<TKey, TValue>` / `HashSet<T>` | Expected O(1) operations |
+| Repeated minimum/maximum selection | Heap / `PriorityQueue<TElement, TPriority>` | O(log n) insertion and removal |
+| Sorted input or monotonic condition | Binary search | O(log n) boundary search |
+| Prefix lookup across many strings | Trie | O(L) lookup for a word of length L |
+| Overlapping subproblems | Dynamic programming | Store each state so it is not recomputed |
+| Constraints and candidate construction | Backtracking | Choose, recurse, undo; prune invalid partial states |
+| Merge components while processing edges | Union-Find | Efficient connectivity checks and unions |
+| Dynamic range queries/updates | Fenwick or segment tree | O(log n) updates and queries |
+| Contiguous window or sorted pair | Sliding window / two pointers | Move boundaries monotonically instead of restarting |
+
+### Complexity to memorize
+
+| Operation / algorithm | Typical time | Extra space / conditions |
+|---|---:|---|
+| Array index read | O(1) | Insert/delete in middle is O(n) |
+| Hash lookup/insert/delete | Expected O(1), worst O(n) | Depends on collisions and resizing |
+| Balanced BST search/insert/delete | O(log n) | AVL and red-black trees maintain height |
+| Unbalanced BST operation | O(h), worst O(n) | h is tree height |
+| Heap peek / insert / remove | O(1) / O(log n) / O(log n) | Heapify existing array is O(n) |
+| BFS / DFS | O(V + E) | O(V) visited state |
+| Binary search | O(log n) | Requires sorted data or a monotonic predicate |
+| Merge sort | O(n log n) | O(n) auxiliary space; stable |
+| Quick sort | Average O(n log n), worst O(n²) | Pivot choice matters |
+| Dijkstra with heap | O((V + E) log V) | Edge weights must be non-negative |
+| Bellman-Ford | O(VE) | Supports negative edges |
+| Union-Find operations | Amortized O(α(n)) | Path compression + union by size/rank |
+| Trie insert/search | O(L) | L is the key length |
+| DP | Number of states × transitions per state | Define state before estimating |
+| Backtracking | Often exponential | Pruning helps typical inputs, not necessarily worst case |
+| Fenwick/segment-tree update or query | O(log n) | Segment tree supports broader aggregates |
+
+### Heapify: last-minute reminder
+
+`Heapify` is not the same as repeatedly inserting every item. For a zero-based array, start at its last parent, `(n / 2) - 1`, and sift down each parent toward index 0. The reason this is O(n) is that most nodes are close to the leaves and can move only a few levels. Repeated insertions sift each value up and take O(n log n). See the complete C# `Heapify` and `SiftDown` implementation in the Heap properties section.
+
+### C# collection reminders
+
+- `Stack<T>`: LIFO; `Push`, `Pop`, `Peek`.
+- `Queue<T>`: FIFO; `Enqueue`, `Dequeue`, `Peek`.
+- `Dictionary<TKey, TValue>`: key/value lookup; `TryGetValue` avoids a separate membership lookup.
+- `HashSet<T>`: unique values and average O(1) membership tests.
+- `PriorityQueue<TElement, TPriority>`: min-priority queue; `Enqueue`, `Dequeue`, `Peek`; available in .NET 6+.
+- `List<T>.Sort` and LINQ `OrderBy`: use library sorting in application code unless the algorithm itself is the subject.
+
+### Correctness checks before you finish
+
+1. State the invariant: what remains true after every iteration or recursive call?
+2. Check empty input, one element, duplicates, and boundary values.
+3. Check whether the graph is directed, weighted, disconnected, or cyclic.
+4. Check algorithm preconditions: sorted input for binary search; non-negative weights for Dijkstra; DAG for topological ordering.
+5. Distinguish auxiliary space from input/output space, and expected from worst-case complexity.
+6. For DP, write down state, base cases, transition, and evaluation order.
+7. For greedy, justify why a locally chosen option can be part of an optimal solution.
+8. For backtracking, make sure every chosen state is undone before exploring a sibling branch.
+
 ## Additional Foundational Structures and Patterns
 
 The earlier outline focused on major algorithm families. Arrays, linked lists, stacks, queues, and common array patterns are also core interview tools.
@@ -992,6 +1215,12 @@ static long[] BuildPrefix(int[] values)
 static long RangeSum(long[] prefix, int left, int right) => prefix[right + 1] - prefix[left];
 ```
 Here `prefix[i]` is the sum of the first i values. This supports static range queries, but changing a value requires updating later prefix entries; use a Fenwick or segment tree when updates and queries are mixed.
+
+```text
+values:       [ 4,  2,  7,  1]
+prefix (P):   [ 0,  4,  6, 13, 14]
+sum indices 1..3 = P[4] - P[1] = 14 - 4 = 10
+```
 
 ### Two pointers and sliding windows
 Two pointers exploit order or a maintained interval to avoid reconsidering pairs. In a sorted array, move the left pointer up when the sum is too small and the right pointer down when it is too large. A sliding window similarly advances right to include data and left to restore a constraint, often solving a contiguous-subarray problem in O(n).
@@ -1025,6 +1254,14 @@ static int LongestUniqueSubstring(string text)
 ```
 The pair search requires sorted input. The substring window uses a map of last-seen positions and advances left past a repeated character, so every index is processed only a constant number of times.
 
+```text
+Text: a b c a d
+      [-----]        first unique window "abc"
+        [-----]      after second 'a', move left past the earlier 'a'
+
+Window edges only move right, so the scan stays O(n), not O(n²).
+```
+
 ### Stacks and queues
 A stack is LIFO (last in, first out); it is useful for DFS, parsing, and undo histories. A queue is FIFO (first in, first out); it is useful for BFS and scheduling. In C#, use `Stack<T>` for LIFO and `Queue<T>` for FIFO; their push/pop and enqueue/dequeue operations are amortized O(1).
 
@@ -1036,6 +1273,13 @@ string top = stack.Pop();
 var queue = new Queue<string>(new[] { "first", "second" });
 string front = queue.Dequeue();
 queue.Enqueue("third");
+```
+
+```text
+Stack (LIFO)              Queue (FIFO)
+push -> [A, B] <- pop     enqueue -> [A, B] -> dequeue
+             top                         front
+last added leaves first   first added leaves first
 ```
 ### Monotonic stack
 A monotonic stack keeps values (or indices) in increasing or decreasing order. When a new value violates that order, pop items whose answer has just been found. This solves next-greater-element and histogram-boundary problems in O(n), since each item is pushed and popped at most once.
@@ -1056,6 +1300,13 @@ static int[] NextGreater(int[] values)
 ```
 ### Linked lists
 A singly linked list node stores a value and a reference to the next node. Insertion/removal at a known node is O(1), but reaching the kth item is O(k); unlike arrays, nodes are not directly indexed. A dummy/sentinel node simplifies operations at the head.
+
+```text
+Before:  1 -> 2 -> 3 -> null
+After:   null <- 1 <- 2 <- 3
+                     ^
+                  new head
+```
 
 ```csharp
 sealed class ListNode
@@ -1156,6 +1407,24 @@ An AVL tree is a BST that also stores a height per node and enforces `abs(height
 - **RL case**: insertion into the right child’s left subtree; rotate right on the child, then left on the node.
 
 Rotations preserve the BST inorder ordering while reducing height. This compact implementation covers insertion and all four cases:
+
+```text
+LL:       z             RR:   z
+          /                    \
+         y                      y
+        /                        \
+       x                          x
+     right(z)                  left(z)
+
+LR:       z             RL:   z
+          /                    \
+         x                      x
+          \                    /
+           y                  y
+     left(x), right(z)   right(x), left(z)
+```
+
+The letters identify the path from the unbalanced node to the newly inserted key. For LL/RR a single rotation fixes the imbalance; LR/RL first rotate the child to make a straight-line case, then rotate the unbalanced node.
 
 ```csharp
 sealed class AvlNode(int key)
