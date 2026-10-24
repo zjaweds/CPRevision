@@ -2179,3 +2179,6 @@ static string LongestCommonPrefix(string[] words)
 }
 ```
 For real text, define whether comparison is case-sensitive and whether punctuation, whitespace, or Unicode normalization should be ignored; those are requirements, not assumptions the algorithms can make.
+
+
+For detailed pattern recognition, C# examples, and diagrams, see the [DSA Problem Patterns in C#](./DSA_Problem_Patterns_CSharp.md) guide.
