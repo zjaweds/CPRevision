@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A readable, searchable web version of the CPRevision study notes."
+    />
+    <title>CPRevision — Study Notes</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="site-header">
+        <a class="brand" href="#" aria-label="CPRevision home">
+          <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
+          <span>CPRevision</span>
+        </a>
+        <a
+          class="source-link"
+          href="https://github.com/zjaweds/CPRevision"
+          target="_blank"
+          rel="noreferrer"
+        >View on GitHub <span aria-hidden="true">↗</span></a>
+      </header>
+
+      <div class="page-layout">
+        <aside class="sidebar" aria-label="Document navigation">
+          <div class="sidebar-heading">ON THIS PAGE</div>
+          <label class="search-wrap">
+            <span class="sr-only">Filter sections</span>
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <circle cx="8.5" cy="8.5" r="5.5"></circle>
+              <path d="m13 13 4 4"></path>
+            </svg>
+            <input id="toc-search" type="search" placeholder="Filter sections..." />
+          </label>
+          <nav id="table-of-contents" class="toc" aria-label="Sections"></nav>
+          <p id="toc-empty" class="toc-empty" hidden>No matching sections.</p>
+        </aside>
+
+        <main class="main-content">
+          <div class="document-kicker">STUDY GUIDE</div>
+          <h1 class="page-title">Data Structures &amp; Algorithms</h1>
+          <p class="page-description">
+            A practical collection of competitive programming notes and concepts.
+          </p>
+          <article id="document" class="markdown-body"></article>
+          <footer class="page-footer">
+            <span>Keep learning. Keep building.</span>
+            <a href="https://github.com/zjaweds/CPRevision">CPRevision on GitHub</a>
+          </footer>
+        </main>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

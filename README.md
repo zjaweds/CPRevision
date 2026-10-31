@@ -1,3 +1,14 @@
+# View these notes as a website
+
+This repository includes a Vite site that renders this document with a searchable table of contents.
+
+```sh
+npm ci
+npm run dev
+```
+
+To publish on GitHub Pages, push to the `main` branch and set **Settings → Pages → Build and deployment → Source** to **GitHub Actions**. The workflow in `.github/workflows/deploy.yml` builds and deploys the site automatically.
+
 # Asymptotic Notation
 ## [Master Theorem](https://www.programiz.com/dsa/master-theorem)
 ## [Amortized Time Complexity](https://stackoverflow.com/questions/15079327/amortized-complexity-in-laymans-terms)
