@@ -241,6 +241,7 @@ a {
   line-height: 1.45;
   text-decoration: none;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .toc-link:hover {
@@ -275,6 +276,7 @@ a {
 
 .main-content {
   width: min(900px, 100%);
+  min-width: 0;
   padding: 61px clamp(28px, 6vw, 88px) 40px;
 }
 
@@ -473,14 +475,30 @@ a {
   clip-path: inset(50%);
 }
 
+@media (max-width: 960px) and (min-width: 761px) {
+  .page-layout {
+    grid-template-columns: 230px minmax(0, 1fr);
+  }
+
+  .sidebar {
+    padding-right: 16px;
+    padding-left: 18px;
+  }
+
+  .main-content {
+    padding-right: clamp(28px, 4vw, 48px);
+    padding-left: clamp(28px, 4vw, 48px);
+  }
+}
+
 @media (max-width: 760px) {
   .site-header {
     height: 60px;
-    padding: 0 20px;
+    padding: 0 16px;
   }
 
   .header-actions {
-    gap: 10px;
+    gap: 12px;
   }
 
   .theme-toggle {
@@ -501,19 +519,21 @@ a {
     position: static;
     width: 100%;
     height: auto;
-    max-height: 240px;
-    padding: 18px 20px;
+    max-height: 215px;
+    overflow: hidden;
+    padding: 16px 18px;
     border-right: 0;
     border-bottom: 1px solid var(--line);
   }
 
   .toc {
-    max-height: 130px;
+    max-height: 105px;
     overflow: auto;
   }
 
   .main-content {
-    padding: 37px 22px 30px;
+    width: 100%;
+    padding: 34px clamp(18px, 5vw, 30px) 30px;
   }
 
   .page-description {
@@ -522,5 +542,68 @@ a {
 
   .markdown-body {
     font-size: 17px;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-header {
+    height: auto;
+    min-height: 60px;
+    flex-wrap: wrap;
+    gap: 10px 12px;
+    padding: 10px 16px;
+  }
+
+  .brand {
+    gap: 8px;
+    font-size: 16px;
+  }
+
+  .brand-mark {
+    width: 29px;
+    height: 29px;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .source-link {
+    font-size: 14px;
+  }
+
+  .theme-toggle {
+    min-height: 36px;
+  }
+
+  .page-title {
+    font-size: clamp(28px, 8vw, 34px);
+  }
+
+  .page-description {
+    font-size: 16px;
+  }
+
+  .markdown-body {
+    font-size: 16px;
+  }
+
+  .markdown-body h1 {
+    font-size: 28px;
+  }
+
+  .markdown-body h2 {
+    font-size: 23px;
+  }
+
+  .markdown-body h3 {
+    font-size: 19px;
+  }
+
+  .page-footer {
+    flex-direction: column;
+    gap: 8px;
   }
 }
