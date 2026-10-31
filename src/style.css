@@ -1,7 +1,7 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
 
 :root {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Comfortaa", sans-serif;
   color-scheme: dark;
   color: var(--ink);
   background: var(--page-bg);
@@ -87,7 +87,7 @@ a {
   align-items: center;
   gap: 10px;
   color: var(--ink);
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   letter-spacing: -0.035em;
   text-decoration: none;
@@ -107,7 +107,7 @@ a {
 
 .source-link {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   text-decoration: none;
 }
@@ -131,7 +131,7 @@ a {
   color: var(--ink);
   cursor: pointer;
   font: inherit;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -181,7 +181,7 @@ a {
 .sidebar-heading,
 .document-kicker {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.12em;
 }
@@ -219,7 +219,7 @@ a {
   outline: 0;
   color: var(--ink);
   font: inherit;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .search-wrap input::placeholder {
@@ -237,7 +237,7 @@ a {
   padding: 7px 9px;
   border-radius: 5px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.45;
   text-decoration: none;
   text-overflow: ellipsis;
@@ -261,7 +261,7 @@ a {
 .toc-level-3 {
   padding-left: 29px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .toc-link[hidden] {
@@ -270,7 +270,7 @@ a {
 
 .toc-empty {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .main-content {
@@ -286,23 +286,23 @@ a {
 .page-title {
   margin: 0;
   color: var(--ink);
-  font-size: clamp(29px, 4vw, 42px);
+  font-size: clamp(32px, 4.5vw, 48px);
   font-weight: 700;
-  letter-spacing: -0.055em;
+  letter-spacing: -0.035em;
   line-height: 1.15;
 }
 
 .page-description {
   margin: 13px 0 39px;
   color: var(--muted);
-  font-size: 15px;
+  font-size: 18px;
   line-height: 1.7;
 }
 
 .markdown-body {
   min-width: 0;
   color: var(--ink);
-  font-size: 15px;
+  font-size: 18px;
   line-height: 1.78;
   overflow-wrap: anywhere;
 }
@@ -313,7 +313,7 @@ a {
 .markdown-body h4 {
   color: var(--ink);
   font-weight: 700;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.02em;
   line-height: 1.35;
   scroll-margin-top: 25px;
 }
@@ -322,7 +322,7 @@ a {
   margin: 2.6em 0 0.7em;
   padding-top: 0.7em;
   border-top: 1px solid var(--line);
-  font-size: 27px;
+  font-size: 32px;
 }
 
 .markdown-body h1:first-child {
@@ -333,17 +333,17 @@ a {
 
 .markdown-body h2 {
   margin: 2em 0 0.65em;
-  font-size: 21px;
+  font-size: 26px;
 }
 
 .markdown-body h3 {
   margin: 1.65em 0 0.55em;
-  font-size: 17px;
+  font-size: 21px;
 }
 
 .markdown-body h4 {
   margin: 1.5em 0 0.5em;
-  font-size: 15px;
+  font-size: 18px;
 }
 
 .markdown-body p,
@@ -455,7 +455,7 @@ a {
   padding-top: 19px;
   border-top: 1px solid var(--line);
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .page-footer a {
@@ -490,7 +490,7 @@ a {
   }
 
   .source-link {
-    font-size: 12px;
+    font-size: 13px;
   }
 
   .page-layout {
@@ -518,5 +518,9 @@ a {
 
   .page-description {
     margin-bottom: 30px;
+  }
+
+  .markdown-body {
+    font-size: 17px;
   }
 }
