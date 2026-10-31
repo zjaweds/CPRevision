@@ -32,6 +32,7 @@ const documentElement = document.querySelector("#document");
 const tocElement = document.querySelector("#table-of-contents");
 const searchElement = document.querySelector("#toc-search");
 const emptyElement = document.querySelector("#toc-empty");
+const themeToggle = document.querySelector("#theme-toggle");
 
 documentElement.innerHTML = markdown.render(readme);
 
@@ -85,6 +86,31 @@ function filterTableOfContents() {
   emptyElement.hidden = visibleCount > 0;
 }
 
+function updateTheme(theme) {
+  const isDark = theme === "dark";
+  document.documentElement.dataset.theme = theme;
+  themeToggle.setAttribute("aria-pressed", String(isDark));
+  themeToggle.setAttribute(
+    "aria-label",
+    `Switch to ${isDark ? "normal" : "dark"} mode`,
+  );
+  themeToggle.querySelector("span").textContent = isDark ? "Normal mode" : "Dark mode";
+  themeToggle.querySelector("svg").innerHTML = isDark
+    ? '<circle cx="10" cy="10" r="3.5"></circle><path d="M10 1.5v2M10 16.5v2M18.5 10h-2M3.5 10h-2m14.51-6.01-1.42 1.42M5.41 14.59l-1.42 1.42m12.02 0-1.42-1.42M5.41 5.41 3.99 3.99"></path>'
+    : '<path d="M17.5 12.5A7.5 7.5 0 0 1 7.5 2.5a7.5 7.5 0 1 0 10 10Z"></path>';
+
+  try {
+    localStorage.setItem("cpreviewision-theme", theme);
+  } catch {
+    // Theme changes still work for this page view if storage is unavailable.
+  }
+}
+
 addHeadingIds();
 buildTableOfContents();
 searchElement.addEventListener("input", filterTableOfContents);
+updateTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark");
+themeToggle.addEventListener("click", () => {
+  const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  updateTheme(nextTheme);
+});

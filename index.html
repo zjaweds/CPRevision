@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,12 +16,27 @@
           <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
           <span>CPRevision</span>
         </a>
-        <a
-          class="source-link"
-          href="https://github.com/zjaweds/CPRevision"
-          target="_blank"
-          rel="noreferrer"
-        >View on GitHub <span aria-hidden="true">↗</span></a>
+        <div class="header-actions">
+          <button
+            id="theme-toggle"
+            class="theme-toggle"
+            type="button"
+            aria-pressed="true"
+            aria-label="Switch to normal mode"
+          >
+            <svg class="theme-icon" viewBox="0 0 20 20" aria-hidden="true">
+              <circle cx="10" cy="10" r="3.5"></circle>
+              <path d="M10 1.5v2M10 16.5v2M18.5 10h-2M3.5 10h-2m14.51-6.01-1.42 1.42M5.41 14.59l-1.42 1.42m12.02 0-1.42-1.42M5.41 5.41 3.99 3.99"></path>
+            </svg>
+            <span>Normal mode</span>
+          </button>
+          <a
+            class="source-link"
+            href="https://github.com/zjaweds/CPRevision"
+            target="_blank"
+            rel="noreferrer"
+          >View on GitHub <span aria-hidden="true">↗</span></a>
+        </div>
       </header>
 
       <div class="page-layout">
@@ -53,6 +68,16 @@
         </main>
       </div>
     </div>
+    <script>
+      try {
+        const savedTheme = localStorage.getItem("cpreviewision-theme");
+        if (savedTheme === "light" || savedTheme === "dark") {
+          document.documentElement.dataset.theme = savedTheme;
+        }
+      } catch {
+        // Keep the default dark theme if storage is unavailable.
+      }
+    </script>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
