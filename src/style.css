@@ -233,6 +233,7 @@ a {
 }
 
 .toc-link {
+  flex: 0 0 auto;
   overflow: hidden;
   padding: 7px 9px;
   border-radius: 5px;
@@ -547,14 +548,17 @@ a {
 
 @media (max-width: 480px) {
   .site-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: stretch;
     height: auto;
     min-height: 60px;
-    flex-wrap: wrap;
-    gap: 10px 12px;
+    gap: 10px;
     padding: 10px 16px;
   }
 
   .brand {
+    min-width: 0;
     gap: 8px;
     font-size: 16px;
   }
@@ -567,7 +571,13 @@ a {
   .header-actions {
     width: 100%;
     justify-content: space-between;
-    gap: 10px;
+    gap: 8px 12px;
+    flex-wrap: wrap;
+  }
+
+  .theme-toggle,
+  .source-link {
+    white-space: nowrap;
   }
 
   .source-link {
