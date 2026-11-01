@@ -33,6 +33,8 @@ const tocElement = document.querySelector("#table-of-contents");
 const searchElement = document.querySelector("#toc-search");
 const emptyElement = document.querySelector("#toc-empty");
 const themeToggle = document.querySelector("#theme-toggle");
+const sidebarToggle = document.querySelector("#sidebar-toggle");
+const pageLayout = document.querySelector(".page-layout");
 
 documentElement.innerHTML = markdown.render(readme);
 
@@ -109,6 +111,15 @@ function updateTheme(theme) {
 addHeadingIds();
 buildTableOfContents();
 searchElement.addEventListener("input", filterTableOfContents);
+sidebarToggle.addEventListener("click", () => {
+  const isExpanded = sidebarToggle.getAttribute("aria-expanded") === "true";
+  sidebarToggle.setAttribute("aria-expanded", String(!isExpanded));
+  sidebarToggle.setAttribute(
+    "aria-label",
+    `${isExpanded ? "Expand" : "Collapse"} navigation`,
+  );
+  pageLayout.classList.toggle("sidebar-collapsed", isExpanded);
+});
 updateTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark");
 themeToggle.addEventListener("click", () => {
   const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";

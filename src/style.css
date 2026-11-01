@@ -168,6 +168,10 @@ a {
   margin: 0 auto;
 }
 
+.page-layout.sidebar-collapsed {
+  grid-template-columns: 64px minmax(0, 1fr);
+}
+
 .sidebar {
   position: sticky;
   top: 68px;
@@ -178,12 +182,57 @@ a {
   background: var(--surface);
 }
 
+.sidebar-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .sidebar-heading,
 .document-kicker {
   color: var(--muted);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.12em;
+}
+
+.sidebar-toggle {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface-raised);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.sidebar-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.sidebar-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.sidebar-toggle svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+  transition: transform 160ms ease;
+}
+
+.sidebar-toggle[aria-expanded="false"] svg {
+  transform: rotate(180deg);
 }
 
 .search-wrap {
@@ -224,6 +273,23 @@ a {
 
 .search-wrap input::placeholder {
   color: var(--muted);
+}
+
+.page-layout.sidebar-collapsed .sidebar {
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.page-layout.sidebar-collapsed .sidebar-heading {
+  display: none;
+}
+
+.page-layout.sidebar-collapsed .sidebar-heading-row {
+  justify-content: center;
+}
+
+.page-layout.sidebar-collapsed .sidebar-content {
+  display: none;
 }
 
 .toc {
@@ -514,6 +580,14 @@ a {
 
   .page-layout {
     display: block;
+  }
+
+  .page-layout.sidebar-collapsed .sidebar {
+    padding: 12px 18px;
+  }
+
+  .page-layout.sidebar-collapsed .sidebar-heading-row {
+    justify-content: flex-end;
   }
 
   .sidebar {

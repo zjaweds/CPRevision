@@ -41,17 +41,33 @@
 
       <div class="page-layout">
         <aside class="sidebar" aria-label="Document navigation">
-          <div class="sidebar-heading">ON THIS PAGE</div>
-          <label class="search-wrap">
-            <span class="sr-only">Filter sections</span>
-            <svg viewBox="0 0 20 20" aria-hidden="true">
-              <circle cx="8.5" cy="8.5" r="5.5"></circle>
-              <path d="m13 13 4 4"></path>
-            </svg>
-            <input id="toc-search" type="search" placeholder="Filter sections..." />
-          </label>
-          <nav id="table-of-contents" class="toc" aria-label="Sections"></nav>
-          <p id="toc-empty" class="toc-empty" hidden>No matching sections.</p>
+          <div class="sidebar-heading-row">
+            <div class="sidebar-heading">ON THIS PAGE</div>
+            <button
+              id="sidebar-toggle"
+              class="sidebar-toggle"
+              type="button"
+              aria-expanded="true"
+              aria-controls="sidebar-content"
+              aria-label="Collapse navigation"
+            >
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                <path d="m12 4-6 6 6 6"></path>
+              </svg>
+            </button>
+          </div>
+          <div id="sidebar-content" class="sidebar-content">
+            <label class="search-wrap">
+              <span class="sr-only">Filter sections</span>
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                <circle cx="8.5" cy="8.5" r="5.5"></circle>
+                <path d="m13 13 4 4"></path>
+              </svg>
+              <input id="toc-search" type="search" placeholder="Filter sections..." />
+            </label>
+            <nav id="table-of-contents" class="toc" aria-label="Sections"></nav>
+            <p id="toc-empty" class="toc-empty" hidden>No matching sections.</p>
+          </div>
         </aside>
 
         <main class="main-content">
