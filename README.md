@@ -602,7 +602,267 @@ class Program
 
 
 ```
-## Priority Queue
+## Heap Data Structure and Priority Queue
+
+A **binary heap** is a complete binary tree that obeys the heap-order property:
+
+- In a **min-heap**, each parent is less than or equal to its children, so the minimum is at the root.
+- In a **max-heap**, each parent is greater than or equal to its children, so the maximum is at the root.
+- The tree is **complete**: every level is full except possibly the last, and the last level is filled left to right.
+
+The shape property keeps the height at `O(log n)`. A heap is not a binary search tree: siblings and nodes on different branches have no required ordering. Only the root is guaranteed to be the minimum or maximum.
+
+### Array representation
+
+A complete binary tree is compactly stored in an array without node pointers. With zero-based indexing, for a node at index `i`:
+
+| Relationship | Index |
+|---|---:|
+| Parent | `(i - 1) / 2` (when `i > 0`) |
+| Left child | `2 * i + 1` |
+| Right child | `2 * i + 2` |
+
+For example, `[1, 3, 2, 8, 5]` is a min-heap: `1` is the root, `3` and `2` are its children, and `8` and `5` are children of `3`. The array is level-order storage, **not a sorted array**.
+
+### Operations and complexity
+
+| Operation | Time | What happens |
+|---|---:|---|
+| Peek at root | `O(1)` | Read the min/max without removing it |
+| Insert / enqueue | `O(log n)` | Append at the end, then sift up |
+| Remove root / dequeue | `O(log n)` | Move the last item to the root, then sift down |
+| Build from `n` items (bottom-up heapify) | `O(n)` | Sift down from the last parent to the root |
+| Build by inserting `n` items individually | `O(n log n)` | Repeat the insertion operation |
+| Find an arbitrary value | `O(n)` | A heap does not provide search order |
+| Space | `O(n)` | Store all heap items |
+
+The bottom-up build is `O(n)`, not `O(n log n)`: most nodes are near the leaves and need little or no sifting.
+
+### Core repair operations
+
+- **Sift up (bubble up):** after insertion, compare the new leaf with its parent and swap while it has higher priority. This restores order without changing completeness.
+- **Sift down (heapify down):** after removing the root, move the last item to the root and repeatedly swap it with its higher-priority child.
+- For a min-heap, sift down through the smaller child; for a max-heap, through the larger child. Choosing the wrong child can leave the heap invalid.
+- When priorities are equal, either item may appear first. A regular heap is not stable; add a sequence number to the priority if equal-priority items must preserve insertion order.
+
+### Complete generic C# binary heap
+
+This implementation stores a min-heap by default. An `IComparer<T>` defines priority: a negative comparison means the first value should be nearer the root. Pass a reversed comparer for a max-heap. It supports bottom-up construction, insertion, root inspection/removal, safe `Try...` methods, root replacement, and clearing. It targets .NET 6+.
+
+```csharp
+using System;
+using System.Collections.Generic;
+
+public sealed class BinaryHeap<T>
+{
+    private readonly List<T> _items;
+    private readonly IComparer<T> _comparer;
+
+    public BinaryHeap(IComparer<T>? comparer = null)
+    {
+        _items = new List<T>();
+        _comparer = comparer ?? Comparer<T>.Default;
+    }
+
+    // Builds a heap in O(n) using bottom-up heapify.
+    public BinaryHeap(IEnumerable<T> items, IComparer<T>? comparer = null)
+    {
+        ArgumentNullException.ThrowIfNull(items);
+
+        _items = new List<T>(items);
+        _comparer = comparer ?? Comparer<T>.Default;
+
+        for (int i = _items.Count / 2 - 1; i >= 0; i--)
+        {
+            SiftDown(i);
+        }
+    }
+
+    public int Count => _items.Count;
+    public bool IsEmpty => _items.Count == 0;
+
+    public T Peek()
+    {
+        if (IsEmpty)
+        {
+            throw new InvalidOperationException("The heap is empty.");
+        }
+
+        return _items[0];
+    }
+
+    public bool TryPeek(out T item)
+    {
+        if (IsEmpty)
+        {
+            item = default!;
+            return false;
+        }
+
+        item = _items[0];
+        return true;
+    }
+
+    public void Add(T item)
+    {
+        _items.Add(item);
+        SiftUp(_items.Count - 1);
+    }
+
+    public T RemoveRoot()
+    {
+        if (IsEmpty)
+        {
+            throw new InvalidOperationException("The heap is empty.");
+        }
+
+        T root = _items[0];
+        int lastIndex = _items.Count - 1;
+        T lastItem = _items[lastIndex];
+        _items.RemoveAt(lastIndex);
+
+        if (!IsEmpty)
+        {
+            _items[0] = lastItem;
+            SiftDown(0);
+        }
+
+        return root;
+    }
+
+    public bool TryRemoveRoot(out T item)
+    {
+        if (IsEmpty)
+        {
+            item = default!;
+            return false;
+        }
+
+        item = RemoveRoot();
+        return true;
+    }
+
+    // Replaces the root and returns its former value; useful for fixed-size top-k heaps.
+    public T ReplaceRoot(T item)
+    {
+        if (IsEmpty)
+        {
+            throw new InvalidOperationException("The heap is empty.");
+        }
+
+        T root = _items[0];
+        _items[0] = item;
+        SiftDown(0);
+        return root;
+    }
+
+    public void Clear() => _items.Clear();
+
+    private void SiftUp(int index)
+    {
+        while (index > 0)
+        {
+            int parentIndex = (index - 1) / 2;
+            if (_comparer.Compare(_items[index], _items[parentIndex]) >= 0)
+            {
+                break;
+            }
+
+            Swap(index, parentIndex);
+            index = parentIndex;
+        }
+    }
+
+    private void SiftDown(int index)
+    {
+        while (index < _items.Count / 2)
+        {
+            int leftChild = 2 * index + 1;
+            int rightChild = leftChild + 1;
+            int higherPriorityChild = leftChild;
+
+            if (rightChild < _items.Count &&
+                _comparer.Compare(_items[rightChild], _items[leftChild]) < 0)
+            {
+                higherPriorityChild = rightChild;
+            }
+
+            if (_comparer.Compare(_items[higherPriorityChild], _items[index]) >= 0)
+            {
+                break;
+            }
+
+            Swap(index, higherPriorityChild);
+            index = higherPriorityChild;
+        }
+    }
+
+    private void Swap(int first, int second)
+    {
+        (_items[first], _items[second]) = (_items[second], _items[first]);
+    }
+}
+
+public static class Program
+{
+    public static void Main()
+    {
+        var minHeap = new BinaryHeap<int>(new[] { 7, 2, 9, 4, 8 });
+        minHeap.Add(1);
+
+        while (minHeap.TryRemoveRoot(out int value))
+        {
+            Console.Write($"{value} "); // 1 2 4 7 8 9
+        }
+
+        var maxComparer = Comparer<int>.Create((a, b) => b.CompareTo(a));
+        var maxHeap = new BinaryHeap<int>(maxComparer);
+        maxHeap.Add(3);
+        maxHeap.Add(10);
+        Console.WriteLine(maxHeap.Peek()); // 10
+    }
+}
+```
+
+The comparer must define a consistent ordering. Avoid implementing a numeric comparer as `a - b`: subtraction can overflow and return the wrong ordering. Use `CompareTo` (as above) or `Comparer<T>.Default`.
+
+### .NET priority queue
+
+For most application code, use the built-in `PriorityQueue<TElement, TPriority>` instead of maintaining a heap yourself. It is available in .NET 6+ and dequeues the **smallest priority** first. The element and priority can be different types.
+
+```csharp
+var queue = new PriorityQueue<string, int>();
+queue.Enqueue("write report", 3);
+queue.Enqueue("fix outage", 1);
+
+string next = queue.Dequeue(); // "fix outage"
+```
+
+To get a max-priority queue, pass a comparer that reverses priority ordering; do not negate arbitrary numeric priorities, because negating the minimum signed integer overflows.
+
+```csharp
+var maxQueue = new PriorityQueue<string, int>(
+    Comparer<int>.Create((a, b) => b.CompareTo(a)));
+
+maxQueue.Enqueue("lower score", 4);
+maxQueue.Enqueue("higher score", 9);
+string highest = maxQueue.Dequeue(); // "higher score"
+```
+
+The .NET priority queue is also not stable for equal priorities. It does not expose a general decrease-key operation; in algorithms such as Dijkstra, enqueue an improved candidate and skip stale candidates when dequeued.
+
+### Common applications and variations
+
+- **Top k largest:** keep a min-heap of at most `k` values; its root is the smallest value currently among the top `k`. Scan `n` values in `O(n log k)` time and `O(k)` space.
+- **Top k smallest:** keep a max-heap of at most `k` values.
+- **Scheduling and event simulation:** dequeue the next task or event by priority/time.
+- **Dijkstra's algorithm:** select the next smallest tentative distance with a min-priority queue.
+- **Heap sort:** build a heap, then repeatedly remove the root. It takes `O(n log n)` time and can be implemented in-place, but is not stable.
+- **Indexed heap:** stores each item's current heap index, allowing priority updates/removal in `O(log n)`; update the index map on every swap.
+- **Lazy deletion:** when direct update/removal is unavailable, enqueue a new entry and ignore outdated entries when popped. This is simpler but can use extra space.
+- **D-ary heap:** each node has up to `d` children; it trades shorter height for more child comparisons per sift-down.
+
+Use a heap when you need repeated access to the next min/max, not when you need sorted traversal, fast membership checks, or ordered range queries. A heap's unordered contents should not be assumed to be in dequeue order.
 
 # Tree
 A nonlinear hierarchical data structure comprising `Nodes` connected by `Edges`.

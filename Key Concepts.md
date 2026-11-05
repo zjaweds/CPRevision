@@ -87,10 +87,10 @@ LL:   z        right rotation       y
 The RR case mirrors this and uses a left rotation. LR and RL first rotate the child, then rotate the unbalanced node.
 
 ### Heap
-- min-heap: smallest element at root
-- max-heap: largest element at root
-- insert and extract: O(log n)
-- top element: O(1)
+- A binary heap is a **complete binary tree** plus a parent-child ordering rule.
+- Min-heap: each parent is `<=` its children; the smallest item is the root. Max-heap: reverse the rule.
+- A zero-based array stores a node's parent at `(i - 1) / 2`, left child at `2i + 1`, right child at `2i + 2`.
+- Peek root: `O(1)`; insert and remove root: `O(log n)`; bottom-up heapify: `O(n)`; arbitrary search: `O(n)`.
 
 ```text
 Array: [1, 3, 2, 8, 5]       Min-heap:
@@ -101,7 +101,7 @@ Array: [1, 3, 2, 8, 5]       Min-heap:
         8   5
 ```
 
-Only parent-child order is guaranteed; the array is not fully sorted. Bottom-up heapify starts at the last parent and sifts down to build a heap in O(n); inserting n values separately costs O(n log n). In C#, `PriorityQueue<TElement, TPriority>` is a min-priority queue in .NET 6+.
+Only parent-child order is guaranteed; a heap is not sorted and equal-priority items are not necessarily stable. Insert repairs order by sifting up; root removal replaces it with the last item and sifts down. In C#, use `PriorityQueue<TElement, TPriority>` for most priority-queue tasks (.NET 6+, min-priority first), or see the complete generic C# implementation in [the heap section of the main guide](./README.md#heap-data-structure-and-priority-queue).
 
 ## 3. Graphs
 

@@ -962,7 +962,7 @@ static int[] KLargest(int[] values, int k)
 - **Time:** O(n log k); **extra space:** O(k).
 - The returned order is not sorted; sort the result if the problem requires ordering.
 - A max-heap of size k instead finds the k smallest.
-- For building a heap from all existing items, use bottom-up **heapify** in O(n); see the Heap properties section in [the in-depth guide](./DSA_Critical_Concepts_In_Depth.md).
+- For building a heap from all existing items, use bottom-up **heapify** in O(n); see [the heap guide and C# implementation](./README.md#heap-data-structure-and-priority-queue).
 
 ---
 

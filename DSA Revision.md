@@ -37,10 +37,11 @@
 - important for predictable search and insert performance
 
 ### Heap
-- min-heap: smallest element at root
-- max-heap: largest element at root
-- insert and extract: O(log n)
-- top element: O(1)
+- A binary heap is a complete binary tree with a parent-child order property.
+- Min-heap root is smallest; max-heap root is largest. The remaining elements are not sorted.
+- Zero-based array: parent `(i - 1) / 2`, children `2i + 1` and `2i + 2`.
+- Peek `O(1)`, insert/remove root `O(log n)`, bottom-up heapify `O(n)`, arbitrary search `O(n)`.
+- C#: `PriorityQueue<TElement, TPriority>` is min-first on .NET 6+; for a custom heap, see the complete implementation in [the main guide](./README.md#heap-data-structure-and-priority-queue).
 
 ## 3. Graphs
 
