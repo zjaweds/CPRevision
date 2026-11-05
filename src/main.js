@@ -34,6 +34,7 @@ const searchElement = document.querySelector("#toc-search");
 const emptyElement = document.querySelector("#toc-empty");
 const themeToggle = document.querySelector("#theme-toggle");
 const sidebarToggle = document.querySelector("#sidebar-toggle");
+const backToTopButton = document.querySelector("#back-to-top");
 const pageLayout = document.querySelector(".page-layout");
 
 documentElement.innerHTML = markdown.render(readme);
@@ -119,6 +120,12 @@ sidebarToggle.addEventListener("click", () => {
     `${isExpanded ? "Expand" : "Collapse"} navigation`,
   );
   pageLayout.classList.toggle("sidebar-collapsed", isExpanded);
+});
+backToTopButton.addEventListener("click", () => {
+  const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ? "auto"
+    : "smooth";
+  window.scrollTo({ top: 0, behavior });
 });
 updateTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark");
 themeToggle.addEventListener("click", () => {
