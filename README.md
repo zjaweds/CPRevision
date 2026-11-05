@@ -880,6 +880,158 @@ A nonlinear hierarchical data structure comprising `Nodes` connected by `Edges`.
 ![Height and Depth](https://github.com/zjaweds/CPRevision/blob/main/Images/Height.png?raw=true)
   
 ## Binary Tree (Full, Perfect, Complete, Degenerate, Skewed, Balanced, AVL)
+
+These terms describe different shape properties of a binary tree; they are not all mutually exclusive. For example, every perfect binary tree is both full and complete.
+
+### Types of Binary Trees
+
+#### Full (proper) binary tree
+
+Every node has either **zero or two children**; no node has exactly one child.
+
+```text
+      1
+     / \
+    2   3
+       / \
+      4   5
+```
+
+This tree is full: nodes `1` and `3` each have two children, while `2`, `4`, and `5` are leaves.
+
+#### Perfect binary tree
+
+Every internal node has exactly two children, and **all leaves are at the same depth**.
+
+```text
+        1
+       / \
+      2   3
+     / \ / \
+    4  5 6  7
+```
+
+This tree is perfect (and therefore also full and complete). A perfect binary tree with `h` edges from root to leaf has `2^(h+1) - 1` nodes.
+
+#### Complete binary tree
+
+Every level is full except possibly the last, and nodes on the last level are filled **from left to right**.
+
+```text
+        1
+       / \
+      2   3
+     / \ /
+    4  5 6
+```
+
+This tree is complete even though the last level is not full: there is no node at the rightmost position before a position to its left. Heaps use this shape property.
+
+#### Degenerate and skewed binary trees
+
+A **degenerate** tree has at most one child per node, so it behaves like a linked list. A degenerate tree leaning consistently to one side is called **skewed**:
+
+```text
+Left-skewed:      Right-skewed:
+      3                 1
+     /                   \
+    2                     2
+   /                       \
+  1                         3
+```
+
+Searching a chain of `n` nodes may take `O(n)` time, rather than the `O(log n)` height of a well-shaped tree.
+
+#### Balanced binary tree
+
+A binary tree is called **balanced** when its height stays proportional to `log n`, preventing a long, list-like shape. Different data structures use different precise balance rules; AVL trees are one specific, strictly height-balanced kind.
+
+```text
+       4
+      / \
+     2   6
+    / \ / \
+   1  3 5  7
+```
+
+The example is balanced because its subtrees have similar heights. “Balanced” alone does not specify one universal rule.
+
+#### AVL tree
+
+An **AVL tree** is a binary search tree that maintains a height difference of at most `1` between the left and right subtrees of **every** node. Define the balance factor as `height(left) - height(right)`; each node must have a balance factor of `-1`, `0`, or `1`. After insertion or deletion, rotations restore this condition.
+
+##### AVL operations
+
+- **Search:** use ordinary binary-search-tree comparisons; no rebalancing is needed.
+- **Insert:** insert as in a binary search tree, then walk back toward the root updating heights. Rebalance the first node whose balance factor is outside `[-1, 1]`.
+- **Delete:** delete as in a binary search tree (replace a two-child node with its inorder successor or predecessor), then update heights and rebalance ancestors on the path back to the root. Deletion may require rebalancing at more than one ancestor.
+- **Rotations:** a rotation changes local links while preserving the inorder key order. Update the height of the rotated-down node before the new root.
+
+For insertion, the four imbalance shapes and their fixes are:
+
+| Case | Shape of the inserted path | Fix |
+|---|---|---|
+| LL | Left child, then its left child | Right-rotate the unbalanced node |
+| RR | Right child, then its right child | Left-rotate the unbalanced node |
+| LR | Left child, then its right child | Left-rotate the left child, then right-rotate the unbalanced node |
+| RL | Right child, then its left child | Right-rotate the right child, then left-rotate the unbalanced node |
+
+For example, inserting `30, 20, 10` creates an LL imbalance. A right rotation produces:
+
+```text
+      30                 20
+     /                  /  \
+    20       -->       10  30
+   /
+  10
+```
+
+For deletion, use the same rotation shapes, choosing the single or double rotation based on the balance factor of the heavy child: if the left side is too tall, use a right rotation when the left child's balance factor is nonnegative, otherwise use LR; if the right side is too tall, use a left rotation when the right child's balance factor is nonpositive, otherwise use RL. AVL search, insertion, and deletion are `O(log n)`; AVL trees are particularly useful when searches are frequent.
+
+#### Red-black tree
+
+A **red-black tree** is a binary search tree whose nodes are colored red or black. It uses color rules to keep the tree approximately balanced, so the longest root-to-leaf path is at most twice the shortest. This looser balance than AVL trees can mean fewer rotations during updates.
+
+##### Red-black properties
+
+1. Every node is red or black.
+2. The root is black.
+3. Every missing child is treated as a black `NIL` leaf.
+4. A red node cannot have a red parent or child (no two consecutive red nodes).
+5. Every path from a node to a descendant `NIL` leaf contains the same number of black nodes.
+
+Example (each `NIL` is omitted from the drawing and is understood to be black):
+
+```text
+          20(B)
+         /     \
+      10(R)    30(R)
+      /  \      /  \
+    NIL NIL   NIL NIL
+```
+
+##### Red-black operations
+
+- **Search:** use the ordinary binary-search-tree search; colors do not change the comparisons.
+- **Insert:** insert the key as in a binary search tree and color the new node red. If it is the root, color it black. If its parent is black, the tree is already valid. If its parent is red, restore the rules using the parent, uncle (the parent's sibling), and grandparent:
+  - If the uncle is red, recolor the parent and uncle black and the grandparent red; continue checking from the grandparent.
+  - If the uncle is black and the node-parent-grandparent form a triangle (LR or RL), rotate at the parent to make a line.
+  - For a line (LL or RR), recolor the parent black and grandparent red, then rotate at the grandparent (right for LL, left for RR). Finally ensure the root is black.
+- **Delete:** delete as in a binary search tree. If a node with two children is removed, move its inorder successor into its place; the color of the node physically removed determines whether repair is needed. Removing a red node needs no color repair. Removing a black node may create a black-height deficit, repaired by examining its sibling: recolor and move the deficit upward when the sibling is red; when the sibling is black with two black children, recolor it red and move upward (or finish if the parent was red); otherwise rotate/recolor around the parent and sibling. The right-child cases mirror the left-child cases.
+
+For example, inserting `10, 20, 30` first creates a red-red violation. Recoloring and rotating at the grandparent yields:
+
+```text
+Before repair:          After repair:
+  10(B)                    20(B)
+      \                    /   \
+      20(R)              10(R) 30(R)
+          \
+          30(R)
+```
+
+Both AVL and red-black trees support search, insertion, and deletion in `O(log n)` worst-case time. AVL trees enforce tighter height balance; red-black trees generally do less rebalancing during updates.
+
 # Basic Implementation
 ```
 // Online C# Editor for free
