@@ -986,6 +986,27 @@ For example, inserting `30, 20, 10` creates an LL imbalance. A right rotation pr
   10
 ```
 
+##### AVL rotation steps
+
+For a right rotation at node `y`, let `x = y.left` and `T2 = x.right`. Rewire the links in this order:
+
+1. Make `T2` the left subtree of `y`: `y.left = T2`.
+2. Make `y` the right child of `x`: `x.right = y`.
+3. Replace `y` with `x` in `y`'s former parent (or make `x` the root).
+4. Update `y`'s height first, then `x`'s height.
+
+```text
+       y                 x
+      / \               / \
+     x   T3    -->      T1  y
+    / \                   / \
+   T1 T2                 T2 T3
+```
+
+A left rotation is the mirror: let `y = x.right` and `T2 = y.left`; set `x.right = T2`, set `y.left = x`, reconnect `y` to `x`'s former parent (or root), then update `x`'s height followed by `y`'s. A double rotation is two single rotations in order: LR means left-rotate the left child, then right-rotate the unbalanced node; RL means right-rotate the right child, then left-rotate the unbalanced node.
+
+After each insertion or deletion, update heights while walking toward the root. At an unbalanced node, first identify the heavy side, then the heavy child's heavy side: same directions (LL/RR) need one rotation; opposite directions (LR/RL) need two. AVL trees do not use node colors; balance is restored using heights and rotations alone.
+
 For deletion, use the same rotation shapes, choosing the single or double rotation based on the balance factor of the heavy child: if the left side is too tall, use a right rotation when the left child's balance factor is nonnegative, otherwise use LR; if the right side is too tall, use a left rotation when the right child's balance factor is nonpositive, otherwise use RL. AVL search, insertion, and deletion are `O(log n)`; AVL trees are particularly useful when searches are frequent.
 
 #### Red-black tree
@@ -1013,13 +1034,19 @@ Example (each `NIL` is omitted from the drawing and is understood to be black):
 ##### Red-black operations
 
 - **Search:** use the ordinary binary-search-tree search; colors do not change the comparisons.
-- **Insert:** insert the key as in a binary search tree and color the new node red. If it is the root, color it black. If its parent is black, the tree is already valid. If its parent is red, restore the rules using the parent, uncle (the parent's sibling), and grandparent:
-  - If the uncle is red, recolor the parent and uncle black and the grandparent red; continue checking from the grandparent.
-  - If the uncle is black and the node-parent-grandparent form a triangle (LR or RL), rotate at the parent to make a line.
-  - For a line (LL or RR), recolor the parent black and grandparent red, then rotate at the grandparent (right for LL, left for RR). Finally ensure the root is black.
-- **Delete:** delete as in a binary search tree. If a node with two children is removed, move its inorder successor into its place; the color of the node physically removed determines whether repair is needed. Removing a red node needs no color repair. Removing a black node may create a black-height deficit, repaired by examining its sibling: recolor and move the deficit upward when the sibling is red; when the sibling is black with two black children, recolor it red and move upward (or finish if the parent was red); otherwise rotate/recolor around the parent and sibling. The right-child cases mirror the left-child cases.
+- **Insert:** insert the key as in a binary search tree, color the new node red, and apply the insertion repair steps below.
+- **Delete:** delete as in a binary search tree. If a node with two children is removed, move its inorder successor into its place; the color of the node physically removed determines whether repair is needed. Removing a red node needs no repair. Removing a black node may create a black-height deficit; use the deletion repair steps below. The right-child cases mirror the left-child cases.
 
-For example, inserting `10, 20, 30` first creates a red-red violation. Recoloring and rotating at the grandparent yields:
+##### Red-black insertion: recoloring and rotations
+
+Let `z` be the inserted node, `p` its parent, `g` its grandparent, and `u` its uncle (the other child of `g`). A new root is colored black. Otherwise, repeat while `p` is red:
+
+1. **Uncle is red:** color `p` and `u` black, color `g` red, and continue from `z = g`. This moves the possible red-red conflict up the tree; recoloring the root black finishes the repair.
+2. **Uncle is black or `NIL`, triangle shape:** if `p` is the left child of `g` and `z` is `p`'s right child (LR), left-rotate at `p`, then update `p` and `g` from the new links. For the mirror RL case, right-rotate at `p` and likewise refresh the links. This converts the triangle to a line.
+3. **Line shape:** color the line's parent black and `g` red. For LL, right-rotate at `g`; for RR, left-rotate at `g`.
+4. Ensure the root is black. Rotations must also reconnect the rotated subtree to its former parent, or update the root when rotating at the root.
+
+For example, inserting `10, 20, 30` creates an RR line: `30` is red and has a red parent `20`, while the uncle is black `NIL`. Color `20` black and `10` red, then left-rotate at `10`:
 
 ```text
 Before repair:          After repair:
@@ -1029,6 +1056,17 @@ Before repair:          After repair:
           \
           30(R)
 ```
+
+##### Red-black deletion: color repair and rotations
+
+When a black node is physically removed, let `x` be its replacement (possibly a black `NIL` leaf), `p` its parent, and `w` its sibling. While `x` is not the root and is black, apply the appropriate case; if `x` is the left child, the sibling's right child is the **far** child and its left child is the **near** child:
+
+1. **Sibling red:** color `w` black and `p` red, then left-rotate at `p`; refresh `w`. This converts the situation to one with a black sibling.
+2. **Sibling black, both children black:** color `w` red and move the deficit up by setting `x = p`. If `p` was red, the loop ends and coloring `x` black resolves the deficit.
+3. **Sibling black, far child black, near child red:** color the near child black and `w` red, then right-rotate at `w`; refresh `w`. This converts the case to one with a red far child.
+4. **Sibling black, far child red:** copy `p`'s color to `w`, color `p` and the far child black, then left-rotate at `p`. Set `x` to the root to finish.
+
+For `x` as the right child, swap left and right and mirror each rotation. Treat missing children as black. Finish by coloring `x` black. These steps preserve equal black counts on all paths while restoring the no-adjacent-red rule.
 
 Both AVL and red-black trees support search, insertion, and deletion in `O(log n)` worst-case time. AVL trees enforce tighter height balance; red-black trees generally do less rebalancing during updates.
 
