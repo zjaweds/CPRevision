@@ -64,7 +64,7 @@ const requestedPage = new URLSearchParams(window.location.search).get("page");
 const activePage = Object.hasOwn(pages, requestedPage) ? requestedPage : "home";
 const page = pages[activePage];
 
-document.title = `CPRevision — ${page.title}`;
+document.title = `StudySpace — ${page.title}`;
 pageTitle.textContent = page.title;
 pageDescription.textContent = page.description;
 pageKicker.textContent = activePage === "home" ? "STUDY GUIDE" : "LEARNING PATH";

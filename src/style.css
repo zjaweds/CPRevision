@@ -107,8 +107,11 @@ a {
   border-radius: 9px;
   background: var(--accent);
   color: var(--page-bg);
-  font-family: Consolas, monospace;
-  font-size: 12px;
+}
+
+.brand-mark svg {
+  width: 20px;
+  height: 20px;
 }
 
 .site-navigation {
