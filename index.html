@@ -12,10 +12,15 @@
   <body>
     <div id="app">
       <header class="site-header">
-        <a class="brand" href="#" aria-label="CPRevision home">
+        <a class="brand" href="./" aria-label="CPRevision home">
           <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
           <span>CPRevision</span>
         </a>
+        <nav class="site-navigation" aria-label="Study guides">
+          <a href="./" data-page-link="home">DSA</a>
+          <a href="./?page=javascript" data-page-link="javascript">JavaScript</a>
+          <a href="./?page=react" data-page-link="react">React</a>
+        </nav>
         <div class="header-actions">
           <button
             id="theme-toggle"
@@ -71,9 +76,9 @@
         </aside>
 
         <main class="main-content">
-          <div class="document-kicker">STUDY GUIDE</div>
-          <h1 class="page-title">Data Structures &amp; Algorithms</h1>
-          <p class="page-description">
+          <div id="page-kicker" class="document-kicker">STUDY GUIDE</div>
+          <h1 id="page-title" class="page-title">Data Structures &amp; Algorithms</h1>
+          <p id="page-description" class="page-description">
             A practical collection of competitive programming notes and concepts.
           </p>
           <article id="document" class="markdown-body"></article>

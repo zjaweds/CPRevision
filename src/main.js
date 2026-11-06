@@ -1,5 +1,7 @@
 import MarkdownIt from "markdown-it";
 import readme from "../README.md?raw";
+import javascriptGuide from "../JavaScript.md?raw";
+import reactGuide from "../React.md?raw";
 import "./style.css";
 
 const imageAssets = import.meta.glob("../Images/*", {
@@ -36,8 +38,44 @@ const themeToggle = document.querySelector("#theme-toggle");
 const sidebarToggle = document.querySelector("#sidebar-toggle");
 const backToTopButton = document.querySelector("#back-to-top");
 const pageLayout = document.querySelector(".page-layout");
+const pageTitle = document.querySelector("#page-title");
+const pageDescription = document.querySelector("#page-description");
+const pageKicker = document.querySelector("#page-kicker");
 
-documentElement.innerHTML = markdown.render(readme);
+const pages = {
+  home: {
+    title: "Data Structures & Algorithms",
+    description: "A practical collection of competitive programming notes and concepts.",
+    content: readme,
+  },
+  javascript: {
+    title: "JavaScript",
+    description: "Core language concepts, from values and functions to asynchronous code.",
+    content: javascriptGuide,
+  },
+  react: {
+    title: "React",
+    description: "A practical guide to building interfaces with components, props, and state.",
+    content: reactGuide,
+  },
+};
+
+const requestedPage = new URLSearchParams(window.location.search).get("page");
+const activePage = Object.hasOwn(pages, requestedPage) ? requestedPage : "home";
+const page = pages[activePage];
+
+document.title = `CPRevision — ${page.title}`;
+pageTitle.textContent = page.title;
+pageDescription.textContent = page.description;
+pageKicker.textContent = activePage === "home" ? "STUDY GUIDE" : "LEARNING PATH";
+documentElement.innerHTML = markdown.render(page.content);
+document.querySelectorAll("[data-page-link]").forEach((link) => {
+  if (link.dataset.pageLink === activePage) {
+    link.setAttribute("aria-current", "page");
+  } else {
+    link.removeAttribute("aria-current");
+  }
+});
 
 function slugify(text) {
   return text

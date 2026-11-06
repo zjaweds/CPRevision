@@ -1,6 +1,7 @@
 # View these notes as a website
 
 This repository includes a Vite site that renders this document with a searchable table of contents.
+Use the navigation at the top of the site to switch between the DSA, JavaScript, and React study guides. The JavaScript and React guides are in [JavaScript.md](./JavaScript.md) and [React.md](./React.md), with links to Rohit Negi's Coder Army videos.
 
 ```sh
 npm ci
